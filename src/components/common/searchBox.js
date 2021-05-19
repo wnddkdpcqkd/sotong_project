@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, TextInput, StyleSheet, Dimensions, Image} from 'react-native';
+import {View, TextInput, Dimensions, Image} from 'react-native';
 import { globalStyle } from '../../assets/style/globalStyle'
 
 const windowWidth = Dimensions.get('window').width;

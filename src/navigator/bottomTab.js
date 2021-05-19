@@ -3,17 +3,19 @@ import { Image } from 'react-native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../screen/home/home';
+import Map from '../screen/searchInst/map';
 
 
 const Tab = createBottomTabNavigator(); // Tab의 구조 선언
-const homeIcon = '../assets/image/home_click.png';
 
+const homeIcon = '../assets/image/home_click.png';
+const searchIcon = '../assets/image/placeholder_click.png'
 const TabBarIcon = (focused, name) => {
   let iconName, fontSize;
   if (name === '홈') {
     iconName = focused ? require(homeIcon) : require(homeIcon);
-  } else if (name === '지도') {
-    iconName = focused ? require('../assets/image/placeholder_click.png') : require('../assets/image/placeholder.png');
+  } else if (name === '검색') {
+    iconName = focused ? require(searchIcon) : require(searchIcon);
   } else if (name === '홈Test') {
     iconName = focused ? require('../assets/image/current_location.png') : require('../assets/image/chat.png');
   } else if (name === '커뮤니티') {
@@ -41,8 +43,8 @@ export default function bottomTab (){
         tabBarIcon: ({focused}) => TabBarIcon(focused, route.name),
       })}>
       <Tab.Screen name="홈" component={Home} />
-      {/* <Tab.Screen name="지도" component={MapScreen} />
-      <Tab.Screen name="홈Test" component={HomeTest} />
+      <Tab.Screen name="검색" component={Map} />
+      {/* <Tab.Screen name="홈Test" component={HomeTest} />
       <Tab.Screen name="커뮤니티" component={MapTestScreen} />
       <Tab.Screen name="My Page" component={MyPageScreen} /> */}
       

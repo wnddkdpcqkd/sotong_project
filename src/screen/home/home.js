@@ -1,16 +1,10 @@
 import React, {useState, useContext } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  Platform,
-  StyleSheet,
-  ScrollView,
-  Alert,
-  Dimensions
-} from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import SearchBox from '../../components/common/searchBox';
+import { globalStyle } from '../../assets/style/globalStyle'
+import LogoIMG from '../../components/common/logoIMG'
+import HomeText from '../../components/home/homeText'
+import HomeSlider from '../../components/home/homeSlider'
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -21,55 +15,40 @@ const App = ({navigation}) => {
   //const {centerType, setCenterType} = useContext(SearchContext);
 
   return (
-      <View style={styles.container}>
-        <View>
-          <Image style={{
-            width: 35, 
-            height: 35,
-            marginTop :80
+      <View style={globalStyle.container}>
 
-            }} 
-            source={require('../../assets/image/logo_v1.png')}/>
+        {/* 맨 위 로고 */}
+        <View style={styles.logoContainer}>
+          <LogoIMG imgStyle={globalStyle.homeLogo}></LogoIMG>
+          <HomeText></HomeText>
+        </View>
+
+
+        {/* 검색 버튼 */}
+        <View style={styles.searchBoxContainer}>
+          <View style={globalStyle.homeSearchBoxView}>
+            <TouchableOpacity
+              onPress={() => {navigation.navigate('search')}}
+              style={{marginBottom:130}}
+            >
+              <SearchBox autoCorrect={false} editable={false}/>
+            </TouchableOpacity>
           </View>
-
-        <View style = {{
-          backgroundColor : 'yellow',
-          flex : 0.2,
-          width : '100%',
-          marginTop : 30
-        }}>
-        <Text style={{
-          fontFamily:"jalnan",
-          fontSize : 25,
-          textAlign : 'center',
-          color : '#272727',
-          lineHeight : 40
-        }}>소통하세요 ;)</Text>
-        <Text style={styles.centralText}>소아재활 정보 검색</Text>
         </View>
 
-        <View style={{
-          flex : 1,
-          backgroundColor : 'black',
-          marginTop : 10, 
-          width : 0.8*windowWidth,
-          height : 60,
-          alignItems : 'center'
-          }}>
-          <TouchableOpacity
-          //onpress
-          style={{marginBottom:130}}>
-          <SearchBox
-              //labelValue={centerName}
-              //onChangeText={(userCenter) => setCenterName(userCenter)}
-              //placeholderText="병원 또는 센터를 검색하세요"
-              //iconType= {require('../assets/magnifier.png')}
-              //autoCapitalize="none"
-              autoCorrect={false}
-              editable={false}
-          />
-        </TouchableOpacity>
+
+        {/* 컨텐츠 */}
+        <View style={styles.contentContainer}>
+          
         </View>
+
+
+        {/* 슬라이더 */}
+        <View style={styles.sliderContainer}>
+          <HomeSlider></HomeSlider>
+        </View>
+
+
     </View>
   );
 };
@@ -77,31 +56,25 @@ const App = ({navigation}) => {
 export default App;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor:'white',
-    alignItems :'center'
+  logoContainer:{
+    flex : 4, 
+    alignItems:'center', 
+    backgroundColor:'red',
+    width: '100%',
   },
-  logo: {
-    height: 50,
-    width: 200,
-    resizeMode: 'contain',
-    paddingBottom: 100,
+  searchBoxContainer: {
+    flex : 2, 
+    width : 0.8 * windowWidth, 
+    alignItems : 'center',
+    backgroundColor:'pink',
   },
-  centralText: {
-    fontFamily: 'SD_Gothic B',
-    fontSize: 28,
-    fontWeight:'bold',
-    marginBottom: 10,
-    color: '#272727',
-    textAlign: 'center'
+  contentContainer :{
+    flex : 5,
+    backgroundColor: 'green',
   },
-  leftText: {
-    // fontFamily: 'Kufam-SemiBoldItalic',
-    fontFamily: 'SD_Gothic B',
-    fontSize: 19,
-    marginBottom: 10,
-    color: '#051d5f',
-    textAlign: 'center',
+  sliderContainer :{
+    flex : 3,
+    backgroundColor: 'blue',
   },
+
 });

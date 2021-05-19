@@ -5,7 +5,7 @@
  * @format
  * @flow strict-local
  */
-
+ import 'react-native-gesture-handler';
  import React, {Component, useEffect} from 'react';
  //import 'react-native-gesture-handler';
  //import AppStack from './src/AppStack';
