@@ -10,22 +10,21 @@ import RawBottomSheet from '../../components/searchInst/rawBottomSheet';
 
 const markerIMG = '../../assets/image/marker_round.png'
 
-const setMarker = (inst) => {
-    
-        return(
-            inst.map((item) => (
-            <Marker 
-                width={20}
-                height={20}
-                key={item.idx}
-                coordinate={{latitude : item.latitude, longitude: item.longitude}}
-                image={require(markerIMG)} 
-            >
-            </Marker>
-            )
-        ));
-}
 
+const setMarker = (inst) => {
+    return(
+        inst.map((item) => (
+        <Marker 
+            width={20}
+            height={20}
+            key={item.idx}
+            coordinate={{latitude : item.latitude, longitude: item.longitude}}
+            image={require(markerIMG)} 
+        >
+        </Marker>
+        )
+    ));
+}
 
 export default function mapSearch({navigation}) {
 
@@ -867,7 +866,6 @@ export default function mapSearch({navigation}) {
     const refRBSheet = useRef();
     const P0 = {latitude: 37.564362, longitude: 126.977011};
 
-    
     return (
         <View style={globalStyle.container}>
 
@@ -886,21 +884,20 @@ export default function mapSearch({navigation}) {
                         <SearchBox />
                     </TouchableOpacity>
                 </View>
-                
             </View>
-
 
 
 
             {/* 지도 */}
-            <View style={styles.mapView}>
-                <NaverMapView style={{width: '100%', height: '100%'}}
-                                    showsMyLocationButton={true}
+            {/* 처음 검색창 들어갈때만 마커 보이고 두번째부터는 마커 미아됨 */}
+            {/* <View style={styles.mapView}> */}
+            <NaverMapView style={{flex : 9, width: '100%'}}
+                                    showsMyLocationButton={false}
                                     center={{...P0, zoom: 16}}
                 >  
-                    { setMarker(instInfo) }
-                </NaverMapView>
-            </View>
+                    {/* { setMarker(instInfo) } */}
+            </NaverMapView>
+            {/* </View> */}
 
 
 
@@ -922,7 +919,7 @@ const styles = StyleSheet.create({
     },
 
     mapView : {
-        flex : 9,
+        flex : 8,
         width : '100%',
     },
 

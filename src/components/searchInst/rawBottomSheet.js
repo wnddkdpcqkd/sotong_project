@@ -4,21 +4,25 @@ import LogoIMG from '../common/logoIMG';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { globalStyle } from '../../assets/style/globalStyle';
 import { useNavigation } from '@react-navigation/native';
+import { useEffect } from 'react/cjs/react.development';
 //import BottomTab from '../../navigator/bottomTab';
+
+
+const selectedInst = ['']
 
 export default function rawBottomSheet({refRBSheet, searchedList} ) {
     
 const navigation = useNavigation();
 
 //선택한 아이템 이름
-const [selectedInst, setSelectedInst] = useState({
-    idx : 0,
-    inst_name : ''
+const [selectedInst,setSelectedInst] = useState({
+
 });
 
-    function change(name){
-        console.log('change : ', selectedInst);
-    }
+
+    useEffect(() => {
+
+    })
     return (
         <RBSheet
             height={500}
@@ -44,13 +48,13 @@ const [selectedInst, setSelectedInst] = useState({
 
                     renderItem={({item}) => (
                         <TouchableOpacity onPress={() => {
-                            change('adsfdsafasdf');
-                            setSelectedInst({
-                                idx : item.idx,
-                                inst_name : item.inst_name
-                            });
-                            console.log(selectedInst);
-                            navigation.navigate('instDetail',{ inst_name : {selectedInst}});
+
+                            //selectedInst[0] = item.inst_name;
+                            //console.log(item.inst_name);
+                            //console.log(selectedInst[0]);
+                            console.log('in raw Bottom Sheet' , item.inst_name);
+                            navigation.navigate('instDetail', { inst_name : item.inst_name } );
+
                         }}>
                             <View styles={{widh: '100%', flexDirection: 'row',backgroundColor : 'pink'}}>
                                 

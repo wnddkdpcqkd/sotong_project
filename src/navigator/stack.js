@@ -11,6 +11,7 @@ const Stack = createStackNavigator();
 export default function stack({navigation}){ //screen들간의 구조를 선언
   return (
     <Stack.Navigator>
+
       <Stack.Screen
         name="home"
         component={BottomTab}
@@ -19,6 +20,7 @@ export default function stack({navigation}){ //screen들간의 구조를 선언
           headerShown: false,
         }}
       />
+
       <Stack.Screen
         name="search"
         component={Search}
@@ -27,6 +29,7 @@ export default function stack({navigation}){ //screen들간의 구조를 선언
           headerShown: false,
         }}
       />
+      
       <Stack.Screen
         name="instDetail"
         component={InstDetail}
