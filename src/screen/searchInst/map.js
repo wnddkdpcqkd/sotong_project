@@ -893,7 +893,7 @@ export default function mapSearch({navigation}) {
             {/* <View style={styles.mapView}> */}
             <NaverMapView style={{flex : 9, width: '100%'}}
                                     showsMyLocationButton={false}
-                                    center={{...P0, zoom: 16}}
+                                    center={{ ...P0, zoom: 16}}
                 >  
                     {/* { setMarker(instInfo) } */}
             </NaverMapView>

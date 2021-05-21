@@ -16,6 +16,7 @@
     "@react-navigation/stack": "^5.14.5",
     "react": "17.0.1",
     "react-native": "0.64.1",
+    "react-native-action-button": "git://github.com/henasys/react-native-action-button.git#b48e5e0d0cbec228ae319fb34b56abcd96fdd214",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-image-slider-box": "^1.0.12",
     "react-native-nmap": "0.0.62",

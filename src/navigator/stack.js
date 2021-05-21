@@ -4,6 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import BottomTab from './bottomTab';
 import Search from '../screen/searchInst/search';
 import InstDetail from '../screen/searchInst/instDetail';
+import PostDetail from '../screen/community/postDetail'
 //import Search from '../screen/mapSearch/searchPage';
 
 const Stack = createStackNavigator();
@@ -31,10 +32,12 @@ export default function stack({navigation}){ //screen들간의 구조를 선언
       />
       
       <Stack.Screen
-        name="instDetail"
-        component={InstDetail}
+        name="postDetail"
+        component={PostDetail}
         // options={{title: '세부검색'}}
       />
+
+      
     </Stack.Navigator>
   );
 };

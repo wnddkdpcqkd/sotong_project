@@ -4,7 +4,7 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../screen/home/home';
 import Map from '../screen/searchInst/map';
-import PostDetail from '../screen/community/postDetail';
+import community from '../screen/community/community';
 
 
 const Tab = createBottomTabNavigator(); // Tab의 구조 선언
@@ -43,7 +43,7 @@ export default function bottomTab (){
       })}>
       <Tab.Screen name="홈" component={Home} />
       <Tab.Screen name="검색" component={Map} />
-      <Tab.Screen name="커뮤니티" component={PostDetail} />
+      <Tab.Screen name="커뮤니티" component={community} />
       {/* <Tab.Screen name="커뮤니티" component={MapTestScreen} /> */}
       {/* <Tab.Screen name="My Page" component={MyPageScreen} /> */}
       
