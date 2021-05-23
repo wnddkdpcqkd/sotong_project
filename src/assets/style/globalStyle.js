@@ -24,7 +24,7 @@ export const globalStyle = StyleSheet.create({
     },
 
     homeTextContainer: {
-        backgroundColor : 'yellow',
+        backgroundColor : 'white',
         width : '100%',
         marginTop : 10,
     },

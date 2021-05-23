@@ -15,10 +15,10 @@ export default function community({navigation}) {
         return (
         data.map((item,key) => {
             return(
-                <View> 
+                <View key = {key}> 
                     <Divider color='gray' />
                     
-                    <TouchableOpacity key={key} onPress={()=> navigation.navigate('postDetail',item)}>
+                    <TouchableOpacity onPress={()=> navigation.navigate('postDetail',item)}>
                         <Post
                             postImage={item.image}
                             content={item.content}
@@ -104,7 +104,7 @@ export default function community({navigation}) {
 
             {/* Floating 버튼 */}
             <ActionButton buttonColor='#FA8072'>
-                <ActionButton.Item buttonColor='#FA8072' title="게시글 작성" onPress={() => console.log("notes tapped!")}>
+                <ActionButton.Item buttonColor='#FA8072' title="게시글 작성" onPress={() => navigation.navigate('writePost')}>
                     <FontAwesomeIcon name="pencil" style={{fontSize : 15}} />
                 </ActionButton.Item>
             </ActionButton>

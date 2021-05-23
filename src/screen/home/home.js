@@ -59,22 +59,22 @@ const styles = StyleSheet.create({
   logoContainer:{
     flex : 4, 
     alignItems:'center', 
-    backgroundColor:'red',
+    backgroundColor:'white',
     width: '100%',
   },
   searchBoxContainer: {
     flex : 2, 
     width : 0.8 * windowWidth, 
     alignItems : 'center',
-    backgroundColor:'pink',
+    backgroundColor:'white',
   },
   contentContainer :{
     flex : 5,
-    backgroundColor: 'green',
+    backgroundColor: 'white',
   },
   sliderContainer :{
     flex : 3,
-    backgroundColor: 'blue',
+    backgroundColor: 'white',
   },
 
 });
