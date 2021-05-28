@@ -15,10 +15,16 @@ import FormInput from '../../components/common/FormInput';
 import FormButton from '../../components/common/FormButton';
 import {GlobalVar} from '../../GlobalVariables';
 
+//gpl
+import { useQuery } from '@apollo/react-hooks';
+import { gql } from "apollo-boost";
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const filter = ({navigation}) => {
+//const filter = ({navigation}) => {
+
+export default function filter ({navigation}){
   const [centerName, setCenterName] = useState('');
   const [rerender, setRerender] = useState(true);
   const {
@@ -38,7 +44,11 @@ const filter = ({navigation}) => {
     setRere,
   } = useContext(GlobalVar);
 
+
+
   return (
+
+    
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View
         style={{
@@ -153,7 +163,7 @@ const filter = ({navigation}) => {
   );
 };
 
-export default filter;
+//export default filter;
 
 const styles = StyleSheet.create({
   logoContainer: {

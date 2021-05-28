@@ -6,7 +6,7 @@ import Home from '../screen/home/home';
 import Map from '../screen/searchInst/map';
 import community from '../screen/community/community';
 import googleMap from '../screen/searchInst/googleMap';
-
+import testScreen from '../../testScreen';
 
 const Tab = createBottomTabNavigator(); // Tab의 구조 선언
 
