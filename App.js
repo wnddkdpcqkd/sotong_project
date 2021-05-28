@@ -16,7 +16,7 @@
  
  import client from './src/connection/client';
 import { ApolloProvider } from '@apollo/react-hooks';
-import TestScreen from './testScreen';
+
 
 
 
