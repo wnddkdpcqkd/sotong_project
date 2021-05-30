@@ -46,7 +46,7 @@ export default function test() {
 
       return(
         <View>
-        {/* <FormButton
+        <FormButton
           buttonTitle="add"
           onPress={()=>{
             addCustomer({ variables: {
@@ -55,7 +55,7 @@ export default function test() {
               hello: 'hi'
             }})
           }} />
-  <Text></Text> */}
+  <Text></Text>
 </View>
 
       )

@@ -16,15 +16,15 @@ import FormButton from '../../components/common/FormButton';
 import {GlobalVar} from '../../GlobalVariables';
 
 //gpl
-import { useQuery } from '@apollo/react-hooks';
-import { gql } from "apollo-boost";
+import {useQuery} from '@apollo/react-hooks';
+import {gql} from 'apollo-boost';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 //const filter = ({navigation}) => {
 
-export default function filter ({navigation}){
+export default function filter({navigation}) {
   const [centerName, setCenterName] = useState('');
   const [rerender, setRerender] = useState(true);
   const {
@@ -44,12 +44,46 @@ export default function filter ({navigation}){
     setRere,
   } = useContext(GlobalVar);
 
+  ////////////////////////////////////////////////
 
+  const test_care_type = gql`
+    query {
+      CareTypes {
+        id
+        category
+      }
+    }
+  `;
 
+  function test() {
+    const {loading, error, data} = useQuery(test_care_type);
+    // const [addCustomer] = useMutation(clinic_info_add);
 
+    if (loading) return <Text> 'Loading...' </Text>;
+    if (error) return <Text> `Error! ${error.message}` </Text>;
+    if (data && data.CareTypes) {
+      return data.CareTypes.map(item => {
+        console.log(item.id, item.category);
+        return (
+          <View>
+            <FormButton
+              buttonTitle={item.category}
+              key={item.id}
+              //selected={searchTreatmentType[key]}
+              //onPress={() => {
+              //  searchTreatmentType[key] = !searchTreatmentType[key];
+              //  setRerender(!rerender);
+              //}}
+            />
+          </View>
+          //console.log(data)
+        );
+      });
+    }
+  }
+
+  ////////////////////////////////////////////////
   return (
-
-    
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View
         style={{
@@ -134,7 +168,9 @@ export default function filter ({navigation}){
           justifyContent: 'space-evenly',
           alignContent: 'space-around',
         }}>
-        {treatmentList.map((item, key) => {
+        {test()}
+
+        {/* {treatmentList.map((item, key) => {
           return (
             <FormButton
               buttonTitle={item}
@@ -146,7 +182,7 @@ export default function filter ({navigation}){
               }}
             />
           );
-        })}
+        })} */}
       </View>
       <View style={{flex: 6}}></View>
       <TouchableOpacity
@@ -162,7 +198,7 @@ export default function filter ({navigation}){
       </TouchableOpacity>
     </View>
   );
-};
+}
 
 //export default filter;
 

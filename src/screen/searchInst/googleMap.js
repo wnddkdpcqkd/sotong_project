@@ -107,7 +107,14 @@ const googleMap = ({navigation}) => {
   const [centerIndex, setCenterIndex] = useState(-1); //마커와 기관명을 매칭
   const [careType, setCareType] = useState([]);
   const [searchResult, setSearchResult] = useState([]);
-
+  const [flag, setFlag] = useState(false);
+  const [showOne, setShowOne] = useState({
+    name: '',
+    latitude: 0,
+    longitude: 0,
+    type: 0,
+    care_type: [],
+  });
   const treatmentBottomSheet = useRef();
 
   const P0 = {latitude: 37.564362, longitude: 126.977011};
@@ -117,6 +124,9 @@ const googleMap = ({navigation}) => {
   const P4 = {latitude: 0, longitude: 0};
 
   const refRBSheet = useRef();
+
+
+
 
   useEffect(() => {
     PermissionsAndroid.request(
@@ -235,6 +245,7 @@ const googleMap = ({navigation}) => {
           onPress={e => {
             console.log(e.nativeEvent.coordinate);
             setCenterIndex(-1);
+            setFlag(false);
           }}
           initialRegion={{
             latitude: currentLocLat > 0 ? currentLocLat : 37.564362,
@@ -255,7 +266,8 @@ const googleMap = ({navigation}) => {
                     image={require(markerIMG)}
                     key={key}
                     onPress={() => {
-                      refRBSheet.current.open();
+                      setFlag(true);
+                      setShowOne(mem);
                     }}
                   />
                 );
@@ -263,6 +275,52 @@ const googleMap = ({navigation}) => {
             }
           })}
         </MapView>
+        <TouchableOpacity
+          style={{
+            position: 'absolute',
+            backgroundColor: '#FFFFFF',
+            right: 0,
+            bottom: 0,
+            height: windowHeight / 16,
+            width: windowWidth,
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            flexDirection: 'row',
+            justifyContent:'center'
+          }}
+          onPress={()=>{
+            refRBSheet.current.open();
+          }}
+          >
+            <Text>근처 치료기관 보기</Text>
+          </TouchableOpacity>
+        {flag && (
+          <View
+            style={{
+              position: 'absolute',
+              backgroundColor: '#FFFFFF',
+              right: 0,
+              bottom: 0,
+              height: windowHeight / 8,
+              width: windowWidth,
+              borderTopLeftRadius: 10,
+              borderTopRightRadius: 10,
+              flexDirection: 'row',
+            }}>
+            <View style={{flex: 1}}>
+              <Image
+                style={{
+                  width: windowHeight / 8,
+                  height: windowHeight / 8,
+                }}
+                source={require('../../assets/image/filter.png')}
+              />
+            </View>
+            <View style={{flex: 4}}>
+              <Text style={{fontSize: 16, color: '#000'}}>{showOne.name}</Text>
+            </View>
+          </View>
+        )}
       </View>
       <RBSheet
         ref={refRBSheet}
@@ -276,7 +334,7 @@ const googleMap = ({navigation}) => {
             backgroundColor: '#000',
           },
         }}
-        height={Dimensions.get('window').height / 2}>
+        height={windowHeight*0.9}>
         <ScrollView>
           {searchResult.map((mem, key) => {
             if (searchCenterType[0] || searchCenterType[mem.type]) {

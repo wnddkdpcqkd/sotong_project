@@ -25,7 +25,8 @@ const [selectedInst,setSelectedInst] = useState({
     })
     return (
         <RBSheet
-            height={500}
+            
+            height={450}
             ref={refRBSheet}
             closeOnDragDown={true}
             closeOnPressMask={false}
