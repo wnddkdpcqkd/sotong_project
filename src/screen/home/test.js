@@ -10,8 +10,8 @@ export default function test() {
 
 const clinic_info_query = gql`
     {
-      Sotongs {
-            id 
+      Sotongs (id : "4"){
+            id
             name
             hello 
         }
@@ -20,11 +20,14 @@ const clinic_info_query = gql`
 
     const { loading, error, data } = useQuery(clinic_info_query);
     
+    
     if (loading) return ( <Text> 'Loading...' </Text>)
     if (error) return (<Text> `Error! ${error.message}` </Text>)
     if (data && data.Sotongs){
       return(
         data.Sotongs.map((item,key) => {
+
+          
           console.log( "item : " , item);
           console.log( "item.id : " , item.id);
           console.log( "item.name : " , item.name);
@@ -32,7 +35,7 @@ const clinic_info_query = gql`
           <View>
             <Text key={key} > id : {item.id}, name : {item.name} , hello : {item.hello} </Text>
           </View>
-          
+           
         })
       )
     }
