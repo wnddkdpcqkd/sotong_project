@@ -8,6 +8,7 @@ import WritePost from '../screen/community/writePost';
 //import Search from '../screen/mapSearch/searchPage';
 import filter from '../screen/searchInst/filter';
 
+
 const Stack = createStackNavigator();
 
 export default function stack({navigation}){ //screen들간의 구조를 선언
