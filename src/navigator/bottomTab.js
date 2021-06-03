@@ -5,8 +5,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../screen/home/home';
 import Map from '../screen/searchInst/map';
 import community from '../screen/community/community';
-
-
+import googleMap from '../screen/searchInst/googleMap';
+import test from '../screen/searchInst/test'
 const Tab = createBottomTabNavigator(); // Tab의 구조 선언
 
 const homeIcon = '../assets/image/home_click.png';
@@ -49,7 +49,7 @@ export default function bottomTab (){
       <Tab.Screen name="검색" component={Map} />
       <Tab.Screen name="커뮤니티" component={community} />
       <Tab.Screen name="구글" component={googleMap} />
-
+      <Tab.Screen name="테스트" component={test} />
       {/* <Tab.Screen name="커뮤니티" component={MapTestScreen} /> */}
       {/* <Tab.Screen name="My Page" component={MyPageScreen} /> */}
       
