@@ -31,6 +31,10 @@ allprojects {
             url("$rootDir/../node_modules/jsc-android/dist")
         }
 
+        maven { url 'http://devrepo.kakao.com/nexus/content/groups/public/' }
+
+
+
         google()
         jcenter()
         maven { 

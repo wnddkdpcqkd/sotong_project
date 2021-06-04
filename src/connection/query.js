@@ -9,3 +9,14 @@ export const clinic_info_query = gql`
         }
     }   
 `;
+
+export const institution = gql`
+query {
+    Institutions {
+      id
+      institution_name
+      latitude
+      longitude
+    }
+  }
+`;

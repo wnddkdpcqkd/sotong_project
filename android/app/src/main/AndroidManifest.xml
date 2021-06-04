@@ -19,8 +19,10 @@
       android:label="@string/app_name"
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@mipmap/ic_launcher_round"
-      android:allowBackup="false"
-      android:theme="@style/AppTheme">
+      android:allowBackup="true"
+      android:theme="@style/AppTheme"
+      
+      >
       <meta-data
           android:name="com.google.android.geo.API_KEY"
           android:value="AIzaSyAuNQ7_DIsXuvkUiHkbv5fUwMq49CtDhGE"/>
@@ -38,5 +40,24 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
+
+
+
+      <!-- for kakao login -->
+     <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
+        <intent-filter>
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+          <!-- Redirect URI: "kakao{NATIVE_APP_KEY}://oauth“ -->
+          <data android:host="oauth"
+            android:scheme="kakaobe944328a93047dcc7862620844d387b" />
+          </intent-filter>
+      </activity>
+       <!-- for kakao login -->
+
+
+
+
     </application>
 </manifest>
