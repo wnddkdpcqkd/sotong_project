@@ -58,41 +58,37 @@ const googleMap = ({navigation}) => {
 
     const [instLoc, setInstLoc] = useState([]);
 
-    const setMarker = async() =>{
+    async function setMarker() {
         const {loading, error, data} = await useQuery(institution);
         await setInstLoc(data.Institutions)
-        instLoc.map(item => {
-            return(
-                <Marker
-                    width={20}
-                    height={20}
-                    coordinate={{latitude : item.latitude, longitude: item.longitude}}
-                    image={require(markerIMG)} 
-                >
-                </Marker>
-            )
-        }) 
+        await console.log(instLoc)
     }
+    // const setMarker = async() =>{
+    //     const {loading, error, data} = await useQuery(institution);
+    //     await setInstLoc(data.Institutions)
+    //     await console.log(instLoc)
+    // }
 
+    setMarker()
 
-    useEffect(() => {
-        const loadCurrentLoc = async() =>{
-            const position = await Geolocation.getCurrentPosition(            
-                position =>{
-                    setCurrentPos({
-                        latitude : position.coords.latitude,
-                        longitude : position.coords.longitude
-                    });
-                },
-                error => {
-                    console.log(error.code, error.message);
-                },
-            );
-        }
-        loadCurrentLoc();
-        console.log('현재 latitude  : ', currentPos.latitude);
-        console.log('현재 longitude : ', currentPos.longitude); 
-    },[]);
+    // useEffect(() => {
+    //     const loadCurrentLoc = async() =>{
+    //         const position = await Geolocation.getCurrentPosition(            
+    //             position =>{
+    //                 setCurrentPos({
+    //                     latitude : position.coords.latitude,
+    //                     longitude : position.coords.longitude
+    //                 });
+    //             },
+    //             error => {
+    //                 console.log(error.code, error.message);
+    //             },
+    //         );
+    //     }
+    //     loadCurrentLoc();
+    //     console.log('현재 latitude  : ', currentPos.latitude);
+    //     console.log('현재 longitude : ', currentPos.longitude); 
+    // });
 
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
@@ -136,8 +132,8 @@ const googleMap = ({navigation}) => {
                 latitudeDelta: 0.015,
                 longitudeDelta: 0.0121,
             }}>
-
-                {/* {setMarker()} */}
+                
+                
             </MapView>
         </View>
 
