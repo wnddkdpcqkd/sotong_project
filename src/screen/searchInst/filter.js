@@ -36,9 +36,9 @@ export default function filter({navigation}) {
     setTreatment,
     centerTypeList,
     treatmentList,
-    searchCenterType,
+    searchCenterType, //검색 기관유형
     setSearchCenterType,
-    searchTreatmentType,
+    searchTreatmentType, //검색 치료과목
     setSearchTreatmentType,
     rere,
     setRere,
@@ -170,7 +170,7 @@ export default function filter({navigation}) {
         }}>
         {test()}
 
-        {/* {treatmentList.map((item, key) => {
+        {treatmentList.map((item, key) => {
           return (
             <FormButton
               buttonTitle={item}
@@ -182,7 +182,7 @@ export default function filter({navigation}) {
               }}
             />
           );
-        })} */}
+        })}
       </View>
       <View style={{flex: 6}}></View>
       <TouchableOpacity
