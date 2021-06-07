@@ -18,10 +18,11 @@ import MapView, {Marker, Circle, PROVIDER_GOOGLE} from 'react-native-maps';
 import FormInput from '../../components/common/FormInput';
 import FormButton from '../../components/common/FormButton';
 import RBSheet from 'react-native-raw-bottom-sheet';
-// import SwitchSelector from 'react-native-switch-selector';
 import {GlobalVar} from '../../GlobalVariables';
-// import firestore from '@react-native-firebase/firestore';
 import Geolocation from 'react-native-geolocation-service'; //iOS 참조링크: https://dev-yakuza.posstree.com/ko/react-native/react-native-geolocation-service/
+import ConditionalSearchView from '../../components/searchInst/conditionalSearchView';
+import TextSearchView from '../../components/searchInst/textSearchView';
+import BriefInfoView from '../../components/searchInst/briefInfoView';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -38,8 +39,6 @@ const longList = [];
 const contactList = [];
 const idList = []; //기관명 리스트
 const addressList = [];
-// const markerImage = require('../assets/marker_round.png');
-// const selectedMarkerImage = require('../assets/marker_selected.png');
 
 const treatmentTypes = [
   '운동재활치료',
@@ -102,10 +101,6 @@ const googleMap = ({navigation}) => {
     setRere,
   } = useContext(GlobalVar);
   const [centerName, setCenterName] = useState(''); //검색창에 입력된 문자열
-  const [currentLocLat, setCurrentLocLat] = useState(0);
-  const [currentLocLong, setCurrentLocLong] = useState(0);
-  const [centerIndex, setCenterIndex] = useState(-1); //마커와 기관명을 매칭
-  const [careType, setCareType] = useState([]);
   const [searchResult, setSearchResult] = useState([]);
   const [flag, setFlag] = useState(false);
   const [showOne, setShowOne] = useState({
@@ -115,37 +110,49 @@ const googleMap = ({navigation}) => {
     type: 0,
     care_type: [],
   });
-  const treatmentBottomSheet = useRef();
-
-  const P0 = {latitude: 37.564362, longitude: 126.977011};
-  const P1 = {latitude: 37.565051, longitude: 126.978567};
-  const P2 = {latitude: 37.565383, longitude: 126.976292};
-  const P3 = {latitude: 37.5017, longitude: 127.0046}; //서울성모
-  const P4 = {latitude: 0, longitude: 0};
-
+  const [currentPos, setCurrentPos] = useState({
+    latitude: 0,
+    longitude: 0,
+  });
   const refRBSheet = useRef();
 
-
-
+  useEffect(() => {
+    const loadCurrentLoc = async () => {
+      const position = await Geolocation.getCurrentPosition(
+        position => {
+          setCurrentPos({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        error => {
+          console.log(error.code, error.message);
+        },
+      );
+    };
+    loadCurrentLoc();
+    console.log('현재 latitude  : ', currentPos.latitude);
+    console.log('현재 longitude : ', currentPos.longitude);
+  }, []);
 
   useEffect(() => {
-    PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
-    );
-    console.log('Ask location permission');
-    Geolocation.getCurrentPosition(
-      position => {
-        setCurrentLocLat(position.coords.latitude);
-        setCurrentLocLong(position.coords.longitude);
-        console.log('currentLat: ', currentLocLat);
-        console.log('currentLong: ', currentLocLong);
-      },
-      error => {
-        console.log(error.code, error.message);
-      },
-      {timeout: 1500, enableHighAccuracy: true, showLocationDialog: true},
-    );
+    // PermissionsAndroid.request(
+    //   PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    //   PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+    // );
+    // console.log('Ask location permission');
+    // Geolocation.getCurrentPosition(
+    //   position => {
+    //     setCurrentLocLat(position.coords.latitude);
+    //     setCurrentLocLong(position.coords.longitude);
+    //     console.log('currentLat: ', currentLocLat);
+    //     console.log('currentLong: ', currentLocLong);
+    //   },
+    //   error => {
+    //     console.log(error.code, error.message);
+    //   },
+    //   {timeout: 1500, enableHighAccuracy: true, showLocationDialog: true},
+    // );
     {
       if (centerName.length > 0) {
         setSearchResult(dataset.filter(mem => mem.name.includes(centerName)));
@@ -156,86 +163,40 @@ const googleMap = ({navigation}) => {
   }, [centerName, rere]);
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
-      <View
-        style={{
-          flex: 2,
-          marginTop: 3,
-          flexDirection: 'row',
-        }}>
-        <TouchableOpacity
-          style={{flex: 1, paddingLeft: windowWidth / 20, paddingTop: 15}}
-          onPress={() => {
-            refRBSheet.current.open();
-          }}>
-          <Image
-            style={{width: 17, height: 17}}
-            source={require('../../assets/image/arrow_left.png')}
-          />
-        </TouchableOpacity>
-        <View style={{flex: 9}}>
-          <FormInput
-            labelValue={centerName}
-            onChangeText={str => {
-              setCenterName(str);
-            }}
-            placeholderText="병원 또는 센터를 검색하세요"
-            iconType={require('../../assets/image/magnifier.png')}
-            autoCapitalize="none"
-            autoCorrect={false}
-            editable={true}
-          />
-        </View>
-      </View>
-      <View style={{flex: 2, flexDirection: 'row'}}>
-        <View style={{flex: 8, flexWrap: 'wrap', justifyContent: 'flex-start'}}>
-          <View style={{paddingLeft: 10, paddingTop: 5}}>
-            <FormButton
-              buttonTitle={location}
-              selected={true}
-              onPress={() => {
-                navigation.navigate('filter');
-              }}
-            />
-          </View>
-          <View style={{paddingLeft: 10, paddingTop: 5}}>
-            <FormButton
-              buttonTitle={centerType}
-              selected={searchCenterType[0]}
-              onPress={() => {
-                navigation.navigate('filter');
-              }}
-            />
-          </View>
-          <View style={{paddingLeft: 10, paddingTop: 5}} onPress={() => {}}>
-            <FormButton
-              buttonTitle="치료과목"
-              selected={true}
-              onPress={() => {
-                navigation.navigate('filter');
-              }}
-            />
-          </View>
-        </View>
-        <View style={{flex: 2}}>
-          <TouchableOpacity
-            style={{
-              paddingLeft: 10,
-              paddingTop: 5,
-              flexDirection: 'row',
-              justifyContent: 'flex-end',
-            }}
-            onPress={() => {
-              navigation.navigate('filter');
-            }}>
-            <Image
-              style={{width: 20, height: 20, marginTop: 7}}
-              source={require('../../assets/image/filter.png')}
-            />
-            <Text style={{fontSize: 17, padding: 5}}>필터</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View style={{flex: 20}}>
+
+      {/* 검색창(TextSearchView.js) View */}
+      <TextSearchView
+        onGoBackButtonPress={() => {
+          refRBSheet.current.open();
+        }}
+        labelValue={centerName}
+        onChangeText={str => {
+          setCenterName(str);
+        }}
+      />
+
+      {/* 조건부검색(ConditionalSearchView.js) View */}
+      <ConditionalSearchView
+        locationButtonTitle={location}
+        centerTypeButtonTitle={centerType}
+        careTypeButtonTitle="치료과목"
+        selectedCenterType={searchCenterType[0]}
+        locationButtonOnPress={() => {
+          navigation.navigate('filter');
+        }}
+        centerTypeButtonOnPress={() => {
+          navigation.navigate('filter');
+        }}
+        careTypeButtonOnPress={() => {
+          navigation.navigate('filter');
+        }}
+        filterButtonOnPress={() => {
+          navigation.navigate('filter');
+        }}
+      />
+
+      {/* 지도 View */}
+      <View style={styles.mapContainer}>
         <MapView
           provider={PROVIDER_GOOGLE}
           style={{...StyleSheet.absoluteFillObject}}
@@ -248,8 +209,9 @@ const googleMap = ({navigation}) => {
             setFlag(false);
           }}
           initialRegion={{
-            latitude: currentLocLat > 0 ? currentLocLat : 37.564362,
-            longitude: currentLocLong > 0 ? currentLocLong : 126.977011,
+            latitude: currentPos.latitude > 0 ? currentPos.latitude : 37.564362,
+            longitude:
+              currentPos.longitude > 0 ? currentPos.longitude : 126.977011,
             latitudeDelta: 0.015,
             longitudeDelta: 0.0121,
           }}>
@@ -275,53 +237,41 @@ const googleMap = ({navigation}) => {
             }
           })}
         </MapView>
+
+        {/* 지도 하단 근처치료기관보기(institutionsNearby) 버튼 */}
         <TouchableOpacity
-          style={{
-            position: 'absolute',
-            backgroundColor: '#FFFFFF',
-            right: 0,
-            bottom: 0,
-            height: windowHeight / 16,
-            width: windowWidth,
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
-            flexDirection: 'row',
-            justifyContent:'center'
-          }}
-          onPress={()=>{
-            refRBSheet.current.open();
-          }}
-          >
-            <Text>근처 치료기관 보기</Text>
-          </TouchableOpacity>
+          style={styles.institutionsNearby}
+          onPress={() => {
+            refRBSheet.current.open(); //전체검색결과 보여줌
+          }}>
+          <Text>근처 치료기관 보기</Text>
+        </TouchableOpacity>
+
+        {/* 개별 마커 선택시 간략정보창(BriefInfoView) 띄우기 */}
         {flag && (
-          <View
-            style={{
-              position: 'absolute',
-              backgroundColor: '#FFFFFF',
-              right: 0,
-              bottom: 0,
-              height: windowHeight / 8,
-              width: windowWidth,
-              borderTopLeftRadius: 10,
-              borderTopRightRadius: 10,
-              flexDirection: 'row',
-            }}>
-            <View style={{flex: 1}}>
-              <Image
-                style={{
-                  width: windowHeight / 8,
-                  height: windowHeight / 8,
-                }}
-                source={require('../../assets/image/filter.png')}
-              />
-            </View>
-            <View style={{flex: 4}}>
-              <Text style={{fontSize: 16, color: '#000'}}>{showOne.name}</Text>
-            </View>
-          </View>
+          <BriefInfoView
+            imageSource={require('../../assets/image/filter.png')}
+            instName={showOne.name}
+            instInfo="아무거나"
+          />
+          // <View style={styles.selectedMarker}>
+          //   <View style={{flex: 1}}>
+          //     <Image
+          //       style={{
+          //         width: windowHeight / 8,
+          //         height: windowHeight / 8,
+          //       }}
+          //       source={require('../../assets/image/filter.png')}
+          //     />
+          //   </View>
+          //   <View style={{flex: 4}}>
+          //     <Text style={{fontSize: 16, color: '#000'}}>{showOne.name}</Text>
+          //   </View>
+          // </View>
         )}
       </View>
+
+      {/* 전체 검색 결과 리스트 */}
       <RBSheet
         ref={refRBSheet}
         closeOnDragDown={true}
@@ -334,7 +284,7 @@ const googleMap = ({navigation}) => {
             backgroundColor: '#000',
           },
         }}
-        height={windowHeight*0.9}>
+        height={windowHeight * 0.9}>
         <ScrollView>
           {searchResult.map((mem, key) => {
             if (searchCenterType[0] || searchCenterType[mem.type]) {
@@ -348,27 +298,13 @@ const googleMap = ({navigation}) => {
                 return (
                   <TouchableOpacity
                     key={key}
-                    style={{
-                      marginLeft: 10,
-                      marginRight: 10,
-                      borderColor: '#FA8072',
-                      borderWidth: 1,
-                      borderRadius: 10,
-                      height: 100,
-                      backgroundColor: 'white',
-                      padding: 5,
-                      marginTop: 5,
-                      flexDirection: 'row',
-                    }}
+                    style={styles.searchResultList}
                     onPress={() => {
                       //개별기관 정보페이지로
                     }}>
                     <View style={{flex: 1}}>
                       <Image
-                        style={{
-                          width: 90,
-                          height: 90,
-                        }}
+                        style={styles.instIcon}
                         source={require('../../assets/image/filter.png')}
                       />
                     </View>
@@ -391,52 +327,38 @@ const googleMap = ({navigation}) => {
 export default googleMap;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    // alignItems: 'center',
-    padding: 20,
-    paddingTop: 10,
-    backgroundColor: 'white',
+  instIcon: {
+    width: 90,
+    height: 90,
   },
-  logo: {
-    height: 50,
-    width: 200,
-    resizeMode: 'contain',
-    paddingBottom: 100,
+  filterContainer: {
+    flex: 2,
   },
-  text: {
-    fontFamily: 'Kufam-SemiBoldItalic',
-    fontSize: 28,
-    marginBottom: 10,
-    color: '#051d5f',
-    textAlign: 'center',
+  mapContainer: {
+    flex: 20,
   },
-  button: {
-    height: 33,
-    backgroundColor: 'white',
-    borderWidth: 1,
-    padding: 5,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
-    borderColor: '#FA8072',
-    marginRight: 5,
-    marginTop: 3,
+  institutionsNearby: {
+    position: 'absolute',
+    backgroundColor: '#FFFFFF',
+    right: 0,
+    bottom: 0,
+    height: windowHeight / 16,
+    width: windowWidth,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
-  optionText: {
-    fontSize: 15,
-    paddingLeft: 15,
-  },
-  optionButton: {
-    borderColor: '#FA8072',
-    borderBottomWidth: 1,
-    flex: 1,
+  searchResultList: {
     marginLeft: 10,
     marginRight: 10,
-    paddingTop: 15,
+    borderColor: '#FA8072',
+    borderWidth: 1,
+    borderRadius: 10,
+    height: 100,
+    backgroundColor: 'white',
+    padding: 5,
+    marginTop: 5,
+    flexDirection: 'row',
   },
-  horizontalRegion: {flex: 4, flexDirection: 'row', backgroundColor: '#EEEEE8'},
 });
