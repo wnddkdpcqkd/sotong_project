@@ -210,8 +210,7 @@ const googleMap = ({navigation}) => {
           }}
           initialRegion={{
             latitude: currentPos.latitude > 0 ? currentPos.latitude : 37.564362,
-            longitude:
-              currentPos.longitude > 0 ? currentPos.longitude : 126.977011,
+            longitude: currentPos.longitude > 0 ? currentPos.longitude : 126.977011,
             latitudeDelta: 0.015,
             longitudeDelta: 0.0121,
           }}>

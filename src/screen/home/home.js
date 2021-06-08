@@ -5,76 +5,96 @@ import { globalStyle } from '../../assets/style/globalStyle'
 import LogoIMG from '../../components/common/logoIMG'
 import HomeText from '../../components/home/homeText'
 import HomeSlider from '../../components/home/homeSlider'
+import { institution } from '../../connection/query';
+
+
+
+
+
+
+import {useQuery} from '@apollo/react-hooks';
+import { type } from 'node:os';
+
+
+
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const App = ({navigation}) => {
-  
-  //const [centerName, setCenterName] = useState();
-  //const {centerType, setCenterType} = useContext(SearchContext);
 
-  return (
-      <View style={globalStyle.container}>
-
-        {/* 맨 위 로고 */}
-        <View style={styles.logoContainer}>
-          <LogoIMG imgStyle={globalStyle.homeLogo}></LogoIMG>
-          <HomeText></HomeText>
-        </View>
+//const [centerName, setCenterName] = useState();
+//const {centerType, setCenterType} = useContext(SearchContext);
 
 
-        {/* 검색 버튼 */}
-        <View style={styles.searchBoxContainer}>
-          <View style={globalStyle.homeSearchBoxView}>
-            <TouchableOpacity
-              onPress={() => {navigation.navigate('search')}}
-              style={{marginBottom:130}}
-            >
-              <SearchBox autoCorrect={false} editable={false}/>
-            </TouchableOpacity>
-          </View>
-        </View>
 
 
-        {/* 컨텐츠 */}
-        <View style={styles.contentContainer}>
-          
-        </View>
 
 
-        {/* 슬라이더 */}
-        <View style={styles.sliderContainer}>
-          <HomeSlider></HomeSlider>
-        </View>
 
 
-    </View>
-  );
+
+return (
+	<View style={globalStyle.container}>
+
+		{/* 맨 위 로고 */}
+		<View style={styles.logoContainer}>
+		<LogoIMG imgStyle={globalStyle.homeLogo}></LogoIMG>
+		<HomeText></HomeText>
+		</View>
+
+
+		{/* 검색 버튼 */}
+		<View style={styles.searchBoxContainer}>
+		<View style={globalStyle.homeSearchBoxView}>
+			<TouchableOpacity
+			onPress={() => {navigation.navigate('search')}}
+			style={{marginBottom:130}}
+			>
+			<SearchBox autoCorrect={false} editable={false}/>
+			</TouchableOpacity>
+		</View>
+		</View>
+
+
+		{/* 컨텐츠 */}
+		<View style={styles.contentContainer}>
+		
+		</View>
+
+
+		{/* 슬라이더 */}
+		<View style={styles.sliderContainer}>
+		<HomeSlider></HomeSlider>
+		</View>
+
+
+	</View>
+);
 };
 
 export default App;
 
 const styles = StyleSheet.create({
-  logoContainer:{
-    flex : 4, 
-    alignItems:'center', 
-    backgroundColor:'white',
-    width: '100%',
-  },
-  searchBoxContainer: {
-    flex : 2, 
-    width : 0.8 * windowWidth, 
-    alignItems : 'center',
-    backgroundColor:'white',
-  },
-  contentContainer :{
-    flex : 5,
-    backgroundColor: 'white',
-  },
-  sliderContainer :{
-    flex : 3,
-    backgroundColor: 'white',
-  },
+logoContainer:{
+	flex : 4, 
+	alignItems:'center', 
+	backgroundColor:'white',
+	width: '100%',
+},
+searchBoxContainer: {
+	flex : 2, 
+	width : 0.8 * windowWidth, 
+	alignItems : 'center',
+	backgroundColor:'white',
+},
+contentContainer :{
+	flex : 5,
+	backgroundColor: 'white',
+},
+sliderContainer :{
+	flex : 3,
+	backgroundColor: 'white',
+},
 
 });
