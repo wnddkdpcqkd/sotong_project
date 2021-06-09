@@ -97,7 +97,14 @@ const dataset = [
 export default function googleMap2 ({navigation}) {
 const {centerType, setCenterType} = useContext(GlobalVar);
 const {location, setLocation} = useContext(GlobalVar);
+
+////////////////////////////////////////////////////////////
+// 마커
 const {markerList,setMarkerList} = useContext(GlobalVar);
+const {markerFlag,setMarkerFlag} = useContext(GlobalVar);
+
+////////////////////////////////////////////////////////////
+
 const {
 	treatment,
 	setTreatment,
@@ -125,6 +132,9 @@ const refRBSheet = useRef();
 
 const {loading, error, data} = useQuery(institution);
 
+
+////////////////////////////////////////////////////////////////////////////////
+// marker 전체 띄움
 useEffect(() => {
 	if (data && data.Institutions) {
 		const arr = data.Institutions
@@ -132,29 +142,30 @@ useEffect(() => {
 	}
 },[data])
 
-
+// marker데이터 들어오면 markerFlag : true
 useEffect(() => {
-
+	if(markerList.length > 0){
+		setMarkerFlag(true)
+	}
 },[markerList])
 
-function setMarker() {
-	console.log("marker 길이 : " , markerList.length)
-	markerList.map(item => {
-		console.log("item : ", item)
-		return(
-            <Marker
-                width={40}
-                height={40}
-                key={item.id}
-                coordinate={{latitude : item.latitude, longitude: item.longitude}}
-                image={require(markerIMG)}
-                title={item.institution_name}
-            />
-		)
-	})
+// markerList 내의 아이템들 화면에 띄워줌
+const showMarker = (arr) => {
+    return(
+        arr.map((item) => (
+        <Marker 
+            width={50}
+            height={50}
+            key={item.id}
+            coordinate={{latitude : item.latitude, longitude: item.longitude}}
+            image={require(markerIMG)}
+			title = {item.institution_name}
+        >
+        </Marker>
+        )
+    ));
 }
-
-
+////////////////////////////////////////////////////////////////////////////////
 
 return (
 
@@ -216,9 +227,8 @@ return (
 		
 
 			{/****************************************************************************/}
-
-			
-
+			{/*			 						마커									 */}
+			{markerFlag && showMarker(markerList)}
 
 			{/****************************************************************************/}
 

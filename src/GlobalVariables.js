@@ -12,6 +12,7 @@ export const GlobalVariables = ({children}) => {
   const [searchCenterType,setSearchCenterType] = useState([1,0,0,0]); //0번째가 1이면 전체 검색, [1], [2], [3]는 각각 대학병원 병의원 사설센터
   const [searchTreatmentType, setSearchTreatmentType]=useState([1,1,1,1,1,1,1,1]); // 0이면 선택 안됨, 1이면 선택됨
   const [markerList, setMarkerList] = useState([]);
+  const [markerFlag, setMarkerFlag] = useState(false)
   const treatmentList = [
     '운동재활',
     '감각재활',
@@ -30,6 +31,8 @@ export const GlobalVariables = ({children}) => {
       value={{
         markerList,
         setMarkerList,
+        markerFlag,
+        setMarkerFlag,
         centerType,
         setCenterType,
         location,
