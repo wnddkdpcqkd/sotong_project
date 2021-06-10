@@ -188,6 +188,8 @@ android {
 }
 
 dependencies {
+    //naver로그인
+    implementation project(':react-native-seoul-naver-login')
 
     //naver map 사용 시 추가
     implementation 'com.naver.maps:map-sdk:3.11.0'

@@ -11,8 +11,14 @@ export const GlobalVariables = ({children}) => {
   const [rere, setRere]=useState(true);
   const [searchCenterType,setSearchCenterType] = useState([1,0,0,0]); //0번째가 1이면 전체 검색, [1], [2], [3]는 각각 대학병원 병의원 사설센터
   const [searchTreatmentType, setSearchTreatmentType]=useState([1,1,1,1,1,1,1,1]); // 0이면 선택 안됨, 1이면 선택됨
+  
+  // 검색한 병원정보 저장할 배열
   const [markerList, setMarkerList] = useState([]);
   const [markerFlag, setMarkerFlag] = useState(false)
+
+
+  // 인증 됬는지 확인
+  const [loginCheck, setLoginCheck] = useState(false)
   const treatmentList = [
     '운동재활',
     '감각재활',
@@ -29,10 +35,16 @@ export const GlobalVariables = ({children}) => {
   return (
     <GlobalVar.Provider
       value={{
+        
         markerList,
         setMarkerList,
         markerFlag,
         setMarkerFlag,
+        loginCheck,
+        setLoginCheck,
+
+
+
         centerType,
         setCenterType,
         location,

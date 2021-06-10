@@ -1,10 +1,55 @@
 import React, { Component } from "react";
-import { StyleSheet, View, StatusBar, ImageBackground, Text, TextInput, TouchableOpacity, Image } from "react-native";
+import { StyleSheet, View, StatusBar, ImageBackground, Text, TextInput, TouchableOpacity, Image, Platform } from "react-native";
 import EvilIconsIcon from "react-native-vector-icons/EvilIcons";
+import Button from "../../components/common/Button";
+import { NaverLogin, getProfile } from '@react-native-seoul/naver-login';
+import { GlobalVar } from '../../GlobalVariables';
+
 
 const loginBackground = "../../assets/image/login_background.jpg"
 const sotongLogo = "../../assets/image/logo_v1.png"
-function Login(props) {
+
+const initials = {
+    kConsumerKey: 'QuWkmldDj4pP3aPAq59I',
+    kConsumerSecret: '6RQek41Dcj',
+    kServiceAppName: '소통',
+  };
+
+function Login() {
+
+    const {loginCheck, setLoginCheck} = React.useContext(GlobalVar)
+    const [naverToken, setNaverToken] = React.useState(null);
+
+    const naverLogin = props => {
+    return new Promise((resolve, reject) => {
+        NaverLogin.login(props, (err, token) => {
+        console.log(`\n\n  Token is fetched  :: ${token} \n\n`);
+        setNaverToken(token);
+        if (err) {
+            reject(err);
+            return;
+        }
+        resolve(token);
+        setLoginCheck(true);
+        });
+    });
+    };
+
+    const naverLogout = () => {
+    NaverLogin.logout();
+    setNaverToken(null);
+    };
+
+    const getUserProfile = async () => { 
+    const profileResult = await getProfile(naverToken.accessToken);
+    if (profileResult.resultcode === '024') {
+        Alert.alert('로그인 실패', profileResult.message);
+        return;
+    }
+    console.log('profileResult', profileResult);
+    };
+
+
   return (
     <View style={styles.root}>
       
@@ -59,6 +104,56 @@ function Login(props) {
                     <Text style={styles.loginText}>로그인</Text>
                     <Image style={styles.loginImg} source = {require(sotongLogo)}></Image>
                 </TouchableOpacity>
+
+
+
+
+
+                {/**************************************************************************/}
+                {/* 소셜 로그인 */}
+                <View style={styles.socialLoginButton}>
+                    <View>
+                       {/* 네이버 */}
+                        <Button 
+                            height ={40}
+                            width = {160}
+                            text = {"Naver"}
+                            backgroundColor = {'#63CC63'}
+                            onPress = {() => naverLogin(initials)}
+                        />
+                        <View style={{marginTop : 10}}></View>
+                        {/* 카카오 */}
+                        <Button 
+                            height ={40}
+                            width = {160}
+                            text = {"KaKao"}
+                            backgroundColor = {'#F7E600'}
+                            onPress = {() => alert("asdsad")}
+                        />
+                    </View>
+                    <View>
+                       {/* 구글 */}
+                        <Button 
+                            height ={40}
+                            width = {160}
+                            text = {"Google"}
+                            backgroundColor = {'#d62d20'}
+                            onPress = {() => alert("asdsad")}
+                        />
+                        <View style={{marginTop : 10}}></View>
+                        {/* 페이스북 */}
+                        <Button 
+                            height ={40}
+                            width = {160}
+                            text = {"Facebook"}
+                            backgroundColor = {'#3B5998'}
+                            onPress = {() => alert("asdsad")}
+                        />
+                    </View>
+                </View>
+                {/**************************************************************************/}
+
+
             </View>
         </View>
 
@@ -157,12 +252,28 @@ const styles = StyleSheet.create({
         width : 59,
         marginRight : 10,
     },
+    naverLoginButton :{
+        height : 50,
+        width : 160,
+        marginTop : 30,
+        backgroundColor : 'red',
+        elevation : 2,
+    },
+    naverLoginImg :{
+        height : 50,
+        width : 160,
+    },
     loginText: {
         fontSize : 30,
         alignSelf : "center",
         color: "white",
         marginRight : 20,
         marginLeft : 30,
+    },
+    socialLoginButton:{
+        marginTop : 30,
+        flexDirection : "row",
+        justifyContent : "space-between",
     },
     footer: {
         flex : 1,

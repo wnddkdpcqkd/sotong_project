@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useContext} from 'react';
 import { Image } from 'react-native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -6,8 +6,10 @@ import Home from '../screen/home/home';
 import googleMap2 from '../screen/searchInst/googleMap2';
 import community from '../screen/community/community';
 import googleMap from '../screen/searchInst/googleMap';
-import login from '../screen/mypage/login';
-
+import mypage from '../screen/mypage/mypage';
+import Login from '../screen/mypage/login';
+import naverTest from '../screen/mypage/naverTest'
+import { GlobalVar } from '../GlobalVariables';
 
 const Tab = createBottomTabNavigator(); // Tab의 구조 선언
 
@@ -39,7 +41,11 @@ const TabBarIcon = (focused, name) => {
   );
 };
 
+
+
+
 export default function bottomTab (){
+  const {loginCheck, setLoginCheck} = useContext(GlobalVar);
   return (
     <Tab.Navigator
       initialRouteName="홈"
@@ -50,9 +56,11 @@ export default function bottomTab (){
       <Tab.Screen name="홈" component={Home} />
       <Tab.Screen name="검색" component={googleMap2} />
       <Tab.Screen name="커뮤니티" component={community} />
-      <Tab.Screen name="구글" component={googleMap} />
+      <Tab.Screen name="구글" component={naverTest} />
       {/* <Tab.Screen name="커뮤니티" component={MapTestScreen} /> */}
-      <Tab.Screen name="My Page" component={login} />
+      {loginCheck && <Tab.Screen name="My Page" component={mypage} />}
+      {!loginCheck && <Tab.Screen name="My Page" component={Login} />}
+      
       
     </Tab.Navigator>
   );

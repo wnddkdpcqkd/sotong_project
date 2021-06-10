@@ -1,6 +1,7 @@
 package com.sotong_project;
 
 import com.facebook.react.ReactActivity;
+import com.dooboolab.naverlogin.RNNaverLoginPackage;
 
 public class MainActivity extends ReactActivity {
 
