@@ -1,11 +1,34 @@
-import React from 'react'
-import { StyleSheet, Text, View, ImageBackground, TextInput, TouchableOpacity, Image } from 'react-native'
+import React, {useState} from 'react'
+import { StyleSheet, Text, View, ImageBackground, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native'
 import EvilIconsIcon from "react-native-vector-icons/EvilIcons";
+import { useMutation } from '@apollo/react-hooks';
+import { ADD_USER } from '../../connection/query';
+// import { gql } from "apollo-boost";
 
 const loginBackground = "../../assets/image/login_background.jpg"
 const sotongLogo = "../../assets/image/logo_v1.png"
 
+// const ADD_USER = gql`
+//   mutation {
+//     saveUser(
+//       $id: Float!,
+//       $identification: String,
+//       $user_password: String!
+//     ){
+//       saveUser(id : $id, identification: $identification, user_password: $user_password)
+//     }
+//   }`;
+
 export default function createAccount() {
+
+    const [email,setEmail] = useState()
+    const [password, setPassword] = useState()
+    const [name, setName] = useState()
+    const [addUser, {loading, error}] = useMutation(ADD_USER);
+
+    const register = () =>{
+        addUser({variables: {id : name, identification : password, user_password : password }})
+    }
     return (
         <View style={styles.root}>
       
@@ -15,7 +38,7 @@ export default function createAccount() {
                 style={styles.background}
                 source={require(loginBackground)}
                 >
-
+                    <ScrollView>
                 
 
                     <View style={styles.innerBox}>
@@ -38,6 +61,7 @@ export default function createAccount() {
                                     styles = {styles.textInput}
                                     placeholder="User"
                                     placeholderTextColor="rgba(255,255,255,1)"
+                                    onChangeText = {(text) => setEmail(text)}
                                 ></TextInput>
                             </View>
 
@@ -52,6 +76,7 @@ export default function createAccount() {
                                     placeholder="Password"
                                     placeholderTextColor="rgba(255,255,255,1)"
                                     secureTextEntry={true}
+                                    onChangeText = {(text) => setPassword(text)}
                                 ></TextInput>
                             </View>
 
@@ -80,13 +105,14 @@ export default function createAccount() {
                                     placeholder="Name"
                                     placeholderTextColor="rgba(255,255,255,1)"
                                     secureTextEntry={true}
+                                    onChangeText = {(text) => setName(text)}
                                 ></TextInput>
                             </View>
 
                             {/* 회원가입 */}
                             <TouchableOpacity
-                                // onPress={() => props.navigation.navigate("home")}
-                                onPress = {() => alert('회원가입창')}
+                                onPress={() => register()}
+                                //onPress = {() => alert('회원가입창')}
                                 style={styles.registerButton}
                             >
                                 <Text style={styles.registerText}>Sign Up</Text>
@@ -101,7 +127,7 @@ export default function createAccount() {
 
 
 
-
+                    </ScrollView>
                 </ImageBackground>
             </View>
         </View>
