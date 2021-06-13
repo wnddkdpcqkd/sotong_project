@@ -4,7 +4,7 @@ import Divider from '../../components/common/divider';
 
 export default function writePost() {
 
-    const [contentByte, setContentByte] = useState();
+    const [contentByte, setContentByte] = useState(0);
     
     const calculateByte= (str) =>{
         setContentByte(
@@ -23,7 +23,7 @@ export default function writePost() {
     const showButton=(categoryArray) => {
         return (
             categoryArray.map((categoryName,key) => {
-                return <Button title={categoryName} />
+                return <Button key={key} title={categoryName} />
             })
         )   
     }
@@ -54,12 +54,13 @@ export default function writePost() {
                 <View style={styles.textInputContainer} >
                     <View style={styles.textInputHeader} >
                         <Text style={styles.textStyle}> 게시글 작성 </Text>
-                        <Text style={styles.textStyle}> 0 / 1000</Text>
+                        <Text style={styles.textStyle}> {contentByte} / 1000</Text>
                     </View>
                     <TextInput 
                         style={styles.textInput}
                         placeholder='내용을 작성해주세요'
                         multiline={true}
+                        onChangeText={(str) => calculateByte(str)}
                     />
                 </View>
 

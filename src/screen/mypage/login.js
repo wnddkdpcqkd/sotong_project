@@ -15,11 +15,18 @@ const initials = {
     kServiceAppName: '소통',
   };
 
-function Login() {
+function Login({navigation}) {
 
     const {loginCheck, setLoginCheck} = React.useContext(GlobalVar)
     const [naverToken, setNaverToken] = React.useState(null);
 
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////     네이버 로그인     /////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+    //로그인
     const naverLogin = props => {
     return new Promise((resolve, reject) => {
         NaverLogin.login(props, (err, token) => {
@@ -34,21 +41,25 @@ function Login() {
         });
     });
     };
-
+    
+    ////////////////////////////////////////////////////////////////////////////////
+    //로그아웃
     const naverLogout = () => {
     NaverLogin.logout();
     setNaverToken(null);
     };
-
+    
+    ////////////////////////////////////////////////////////////////////////////////
+    //프로필 정보
     const getUserProfile = async () => { 
-    const profileResult = await getProfile(naverToken.accessToken);
-    if (profileResult.resultcode === '024') {
-        Alert.alert('로그인 실패', profileResult.message);
-        return;
-    }
-    console.log('profileResult', profileResult);
+        const profileResult = await getProfile(naverToken.accessToken);
+        if (profileResult.resultcode === '024') {
+            Alert.alert('로그인 실패', profileResult.message);
+            return;
+        }
+        console.log('profileResult', profileResult);
     };
-
+    ////////////////////////////////////////////////////////////////////////////////
 
   return (
     <View style={styles.root}>
@@ -56,7 +67,7 @@ function Login() {
         {/* 백그라운드 img */}
         <View style={styles.background}>
         <ImageBackground
-          style={styles.rect}
+          style={styles.background}
           source={require(loginBackground)}
         >
 
@@ -162,8 +173,8 @@ function Login() {
         <View style={styles.footer}>
             {/* 계정 생성 */}
             <TouchableOpacity
-                // onPress={() => props.navigation.navigate("SignUp")}
-                onPress={() => alert("가입창 만들어야됨")}
+                onPress={() => navigation.navigate("createAccount")}
+                //onPress={() => alert("가입창 만들어야됨")}
                 style={styles.createAccount}
             >
                 <Text style={styles.createAccount} >Create Account</Text>
@@ -191,9 +202,6 @@ const styles = StyleSheet.create({
         backgroundColor: "rgb(255,255,255)"
     },
     background: {
-        flex: 1
-    },
-    rect: {
         flex: 1
     },
     innerBox: {
@@ -252,6 +260,14 @@ const styles = StyleSheet.create({
         width : 59,
         marginRight : 10,
     },
+    loginText: {
+        fontSize : 30,
+        alignSelf : "center",
+        color: "white",
+        marginRight : 20,
+        marginLeft : 30,
+    },
+    
     naverLoginButton :{
         height : 50,
         width : 160,
@@ -263,13 +279,7 @@ const styles = StyleSheet.create({
         height : 50,
         width : 160,
     },
-    loginText: {
-        fontSize : 30,
-        alignSelf : "center",
-        color: "white",
-        marginRight : 20,
-        marginLeft : 30,
-    },
+
     socialLoginButton:{
         marginTop : 30,
         flexDirection : "row",

@@ -1,7 +1,7 @@
 import React, {Component, useState} from 'react'
 import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity  } from 'react-native'
 import Post from '../../components/community/post'
-// import ActionButton from 'react-native-action-button';
+import ActionButton from 'react-native-action-button';
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import Divider from '../../components/common/divider';
 
@@ -103,11 +103,11 @@ export default function community({navigation}) {
             </ScrollView>
 
             {/* Floating 버튼 */}
-            {/* <ActionButton buttonColor='#FA8072'>
+            <ActionButton buttonColor='#FA8072'>
                 <ActionButton.Item buttonColor='#FA8072' title="게시글 작성" onPress={() => navigation.navigate('writePost')}>
                     <FontAwesomeIcon name="pencil" style={{fontSize : 15}} />
                 </ActionButton.Item>
-            </ActionButton> */}
+            </ActionButton>
 
 
 
