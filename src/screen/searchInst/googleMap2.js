@@ -124,15 +124,41 @@ const [showOne, setShowOne] = useState({
 	care_type: [],
 });
 const [currentPos, setCurrentPos] = useState({
-	latitude: 0,
-	longitude: 0,
+	latitude : 0,
+	longitude : 0
 });
+
+
 
 const refRBSheet = useRef();
 
 const {loading, error, data} = useQuery(institution);
 
 
+////////////////////////////////////////////////////////////////////////////////
+// 현재 위치
+// useEffect(() => {
+const loadCurrentLoc = () => {
+	const position = Geolocation.getCurrentPosition(
+		position => {
+			setCurrentPos({
+				latitude: position.coords.latitude,
+				longitude: position.coords.longitude,
+			});
+			console.log('현재 latitude  : ', currentPos.latitude);
+			console.log('현재 longitude : ', currentPos.longitude);
+		},
+		error => {
+			console.log(error.code, error.message);
+		},
+	);
+};
+
+
+loadCurrentLoc();
+
+
+//   }, [currentPos]);
 ////////////////////////////////////////////////////////////////////////////////
 // marker 전체 띄움
 useEffect(() => {
@@ -204,23 +230,23 @@ return (
 
 	{/* 지도 View */}
 		<View style={styles.mapContainer}>
+
 			<MapView
-			provider={PROVIDER_GOOGLE}
-			style={{...StyleSheet.absoluteFillObject}}
-			showsUserLocation={true}
-			showsMyLocationButton={true} //iOS에서 NSLocationWhenInUseUsageDescription key in Info.plist필요, 참조: https://github.com/react-native-maps/react-native-maps/blob/master/docs/mapview.md
-			zoomControlEnabled={true}
-			onPress={e => {
-				console.log(e.nativeEvent.coordinate);
-				setCenterIndex(-1);
-				setFlag(false);
-			}}
-			initialRegion={{
-				latitude: currentPos.latitude > 0 ? currentPos.latitude : 37.564362,
-				longitude:
-				currentPos.longitude > 0 ? currentPos.longitude : 126.977011,
-				latitudeDelta: 0.015,
-				longitudeDelta: 0.0121,
+				provider={PROVIDER_GOOGLE}
+				style={{...StyleSheet.absoluteFillObject}}
+				showsUserLocation={true}
+				showsMyLocationButton={true} //iOS에서 NSLocationWhenInUseUsageDescription key in Info.plist필요, 참조: https://github.com/react-native-maps/react-native-maps/blob/master/docs/mapview.md
+				zoomControlEnabled={true}
+				onPress={e => {
+					console.log(e.nativeEvent.coordinate);
+					setCenterIndex(-1);
+					setFlag(false);
+				}}
+				initialRegion={{
+					latitude : currentPos.latitude > 0 ? currentPos.latitude : 37.564362,
+					longitude: currentPos.longitude > 0 ? currentPos.longitude : 126.977011,
+					latitudeDelta: 0.015,
+					longitudeDelta: 0.0121,
 			}}>
 			
 			
