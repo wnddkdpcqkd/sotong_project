@@ -370,4 +370,8 @@ const styles = StyleSheet.create({
     marginTop: 5,
     flexDirection: 'row',
   },
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> 818d006e20a0d4744a96490783f0e6fdf87a529c
