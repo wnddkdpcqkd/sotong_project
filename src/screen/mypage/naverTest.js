@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { NaverLogin, getProfile } from '@react-native-seoul/naver-login';
 import { GlobalVar } from '../../GlobalVariables';
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
 const ioskeys = {
   kConsumerKey: 'VC5CPfjRigclJV_TFACU',
@@ -68,6 +69,10 @@ const App = () => {
       {!!naverToken && (
         <Button title="회원정보 가져오기" onPress={getUserProfile} />
       )}
+        <Button title="토큰 확인" onPress={() => AsyncStorage.getItem('token',(err,result) => {
+          console.log(result);
+        })}/>
+        <Button title="토큰 지우기" onPress={() => AsyncStorage.clear()}/>
     </SafeAreaView>
   );
 };

@@ -1,11 +1,14 @@
 import React, { Component } from "react";
-import { StyleSheet, View, StatusBar, ImageBackground, Text, TextInput, TouchableOpacity, Image, Platform } from "react-native";
+import { StyleSheet, View, StatusBar, ImageBackground, Text, TextInput, TouchableOpacity, Image, } from "react-native";
 import EvilIconsIcon from "react-native-vector-icons/EvilIcons";
 import Button from "../../components/common/Button";
 import { NaverLogin, getProfile } from '@react-native-seoul/naver-login';
 import { GlobalVar } from '../../GlobalVariables';
 import { useMutation } from '@apollo/react-hooks';
 import { ADD_SOCIAL_USER } from '../../connection/query';
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
+
+
 
 const loginBackground = "../../assets/image/login_background.jpg"
 const sotongLogo = "../../assets/image/logo_v1.png"
@@ -58,7 +61,10 @@ function Login({navigation}) {
             phone_number : profileResult.response.mobile,
             social_token : profileResult.response.id
         }})
-        console.log(profileResult.message, profileResult.response.email, profileResult.response.id, profileResult.response.mobile, profileResult.response.name)
+        
+        AsyncStorage.setItem('loginMethod','naver');
+        AsyncStorage.setItem('token',JSON.stringify(token));
+        
         setLoginCheck(true)
     }
 
@@ -73,25 +79,6 @@ function Login({navigation}) {
     NaverLogin.logout();
     setNaverToken(null);
     };
-    
-    ////////////////////////////////////////////////////////////////////////////////
-    //프로필 정보
-    // const getUserProfile = async () => { 
-    // async function getUserProfile () {
-    //     const profileResult = await getProfile(naverToken.accessToken);
-    //     if (profileResult.resultcode === '024') {
-    //         Alert.alert('로그인 실패', profileResult.message);
-    //         return;
-    //     }
-    //     console.log('아아아아아아아앙', profileResult.email, profileResult.id, profileResult.mobile, profileResult.name);
-    // };
-    ////////////////////////////////////////////////////////////////////////////////
-    // 로그인 시 DB에 token 과 함께 저장
-
-    const register = () =>{
-        console.log("email : ", email, "password : ", password)
-        addUser({variables: {id : parseFloat(name), identification : email, user_password : password }})
-    }
     ////////////////////////////////////////////////////////////////////////////////
   return (
     <View style={styles.root}>
