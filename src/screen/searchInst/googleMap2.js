@@ -14,7 +14,7 @@ import {
   Button,
   PermissionsAndroid,
 } from 'react-native';
-import MapView, {Marker, Circle, PROVIDER_GOOGLE} from 'react-native-maps';
+import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import FormInput from '../../components/common/FormInput';
 import FormButton from '../../components/common/FormButton';
 import RBSheet from 'react-native-raw-bottom-sheet';
@@ -120,8 +120,10 @@ export default function googleMap2({navigation}) {
   const [currentPos, setCurrentPos] = useState({
     latitude: 0,
     longitude: 0,
+    latitudeDelta: 0.015,
+    longitudeDelta: 0.0121,
   });
-  const [mounted, setMounted]=useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const refRBSheet = useRef();
 
@@ -143,16 +145,15 @@ export default function googleMap2({navigation}) {
     );
   };
 
-
   ////////////////////////////////////////////////////////////////////////////////
   // 현재 위치
-  if(!mounted){
+  if (!mounted) {
     loadCurrentLoc();
   }
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     setMounted(true);
-  },[])
+  }, []);
   ////////////////////////////////////////////////////////////////////////////////
   // marker 전체 띄움
   useEffect(() => {
@@ -169,24 +170,27 @@ export default function googleMap2({navigation}) {
     }
   }, [markerList]);
 
-  // markerList 내의 아이템들 화면에 띄워줌
+  // markerList 내의 아이템들 화면에 띄워줌 (현위치 기준으로 근처에 있는 것만 보여주고 지도상에서 위치 옮기면 그 근처에 있는 것만 보여줌)
   const showMarker = arr => {
-    if (arr !== null) {
-      return arr.map(item => (
-        <Marker
-          width={50}
-          height={50}
-          key={item.id}
-          coordinate={{latitude: item.latitude, longitude: item.longitude}}
-          image={require(markerIMG)}
-          title={item.institution_name}
-          onPress={()=>{
-            setShowOne(item.institution_name)
-            setFlag(true);
-          }}
-          ></Marker>
-      ));
-    }
+    if (arr.length > 0) {
+      return arr.map(item => {
+        if (Math.abs(item.latitude - currentPos.latitude) < currentPos.latitudeDelta/2 && Math.abs(item.longitude - currentPos.longitude) < currentPos.longitudeDelta/2) {
+          return <Marker
+              width={50}
+              height={50}
+              key={item.id}
+              coordinate={{latitude: item.latitude, longitude: item.longitude}}
+              image={require(markerIMG)}
+              title={item.institution_name}
+              onPress={() => {
+                setShowOne(item.institution_name);
+                setFlag(true);
+              }}
+            />
+            }
+        }
+      )
+      };
   };
   ////////////////////////////////////////////////////////////////////////////////
 
@@ -235,17 +239,23 @@ export default function googleMap2({navigation}) {
             console.log(e.nativeEvent.coordinate);
             setFlag(false);
           }}
+          onRegionChange={(region)=>{
+            setCurrentPos({
+              latitude: region.latitude,
+              longitude: region.longitude,
+              latitudeDelta: region.latitudeDelta,
+              longitudeDelta: region.longitudeDelta,
+            })
+          }}
           initialRegion={{
             latitude: currentPos.latitude > 0 ? currentPos.latitude : 37.564362,
-            longitude:
-              currentPos.longitude > 0 ? currentPos.longitude : 126.977011,
-            latitudeDelta: 0.015,
-            longitudeDelta: 0.0121,
+            longitude: currentPos.longitude > 0 ? currentPos.longitude : 126.977011,
+            latitudeDelta: currentPos.latitudeDelta>0 ? currentPos.latitudeDelta : 0.015,
+            longitudeDelta: currentPos.longitudeDelta>0 ? currentPos.longitudeDelta : 0.0121,
           }}>
           {/****************************************************************************/}
           {/*			 						마커									 */}
           {markerFlag && showMarker(markerList)}
-
           {/****************************************************************************/}
         </MapView>
 
