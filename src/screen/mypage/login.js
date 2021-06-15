@@ -4,7 +4,8 @@ import EvilIconsIcon from "react-native-vector-icons/EvilIcons";
 import Button from "../../components/common/Button";
 import { NaverLogin, getProfile } from '@react-native-seoul/naver-login';
 import { GlobalVar } from '../../GlobalVariables';
-
+import { useMutation } from '@apollo/react-hooks';
+import { ADD_SOCIAL_USER } from '../../connection/query';
 
 const loginBackground = "../../assets/image/login_background.jpg"
 const sotongLogo = "../../assets/image/logo_v1.png"
@@ -20,7 +21,7 @@ function Login({navigation}) {
     const {loginCheck, setLoginCheck} = React.useContext(GlobalVar)
     const [naverToken, setNaverToken] = React.useState(null);
 
-
+    const [add_social_user] = useMutation(ADD_SOCIAL_USER);
 
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -30,18 +31,42 @@ function Login({navigation}) {
     const naverLogin = props => {
     return new Promise((resolve, reject) => {
         NaverLogin.login(props, (err, token) => {
+        //네이버 로그인 성공시
         console.log(`\n\n  Token is fetched  :: ${token} \n\n`);
         setNaverToken(token);
         if (err) {
+            //네이버 로그인 실패
             reject(err);
             return;
         }
         resolve(token);
-        setLoginCheck(true);
-        });
-    });
+        }); 
+    }).then( async (token) => {
+        const profileResult = await getProfile(token.accessToken);
+        /////////////////////////user 정보 DB에 넣어야 함/////////////////////////
+
+        // if (profileResult.resultcode === '024') {
+        //     Alert.alert('로그인 실패', profileResult.message);
+        //     return;
+        // }
+
+        //  token id 가 있으면 정보받아오고 없으면 아이디 생성
+        add_social_user({ variables: {
+            id : 1,
+            user_email : profileResult.response.email,
+            password : "1234",
+            phone_number : profileResult.response.mobile,
+            social_token : profileResult.response.id
+        }})
+        console.log(profileResult.message, profileResult.response.email, profileResult.response.id, profileResult.response.mobile, profileResult.response.name)
+        setLoginCheck(true)
+    }
+
+    );
     };
     
+ 
+
     ////////////////////////////////////////////////////////////////////////////////
     //로그아웃
     const naverLogout = () => {
@@ -51,16 +76,23 @@ function Login({navigation}) {
     
     ////////////////////////////////////////////////////////////////////////////////
     //프로필 정보
-    const getUserProfile = async () => { 
-        const profileResult = await getProfile(naverToken.accessToken);
-        if (profileResult.resultcode === '024') {
-            Alert.alert('로그인 실패', profileResult.message);
-            return;
-        }
-        console.log('profileResult', profileResult);
-    };
+    // const getUserProfile = async () => { 
+    // async function getUserProfile () {
+    //     const profileResult = await getProfile(naverToken.accessToken);
+    //     if (profileResult.resultcode === '024') {
+    //         Alert.alert('로그인 실패', profileResult.message);
+    //         return;
+    //     }
+    //     console.log('아아아아아아아앙', profileResult.email, profileResult.id, profileResult.mobile, profileResult.name);
+    // };
     ////////////////////////////////////////////////////////////////////////////////
+    // 로그인 시 DB에 token 과 함께 저장
 
+    const register = () =>{
+        console.log("email : ", email, "password : ", password)
+        addUser({variables: {id : parseFloat(name), identification : email, user_password : password }})
+    }
+    ////////////////////////////////////////////////////////////////////////////////
   return (
     <View style={styles.root}>
       

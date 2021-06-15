@@ -1,6 +1,8 @@
 import React ,{useState}from 'react'
 import { StyleSheet, Text, View, Image } from 'react-native'
-import loginButtonPage from './loginButtonPage'
+import Button from '../../components/common/Button'
+import { NaverLogin, getProfile } from '@react-native-seoul/naver-login';
+import { GlobalVar } from '../../GlobalVariables';
 
 export default function mypage({navigation,user}) {
 
@@ -31,6 +33,7 @@ export default function mypage({navigation,user}) {
                         <Text style={styles.profileText2}> {kidInfo} </Text>
                     </View>
                 </View>
+
             </View>
 
         </View>

@@ -3,31 +3,27 @@ import { StyleSheet, Text, View, ImageBackground, TextInput, TouchableOpacity, I
 import EvilIconsIcon from "react-native-vector-icons/EvilIcons";
 import { useMutation } from '@apollo/react-hooks';
 import { ADD_USER } from '../../connection/query';
-// import { gql } from "apollo-boost";
 
 const loginBackground = "../../assets/image/login_background.jpg"
 const sotongLogo = "../../assets/image/logo_v1.png"
 
-// const ADD_USER = gql`
-//   mutation {
-//     saveUser(
-//       $id: Float!,
-//       $identification: String,
-//       $user_password: String!
-//     ){
-//       saveUser(id : $id, identification: $identification, user_password: $user_password)
-//     }
-//   }`;
+
 
 export default function createAccount() {
 
     const [email,setEmail] = useState()
     const [password, setPassword] = useState()
     const [name, setName] = useState()
-    const [addUser, {loading, error}] = useMutation(ADD_USER);
+    
+    
+    const [addUser] = useMutation(ADD_USER)  ;
+
+
+
 
     const register = () =>{
-        addUser({variables: {id : name, identification : password, user_password : password }})
+        console.log("email : ", email, "password : ", password)
+        addUser({variables: {id : parseFloat(name), identification : email, user_password : password }})
     }
     return (
         <View style={styles.root}>
