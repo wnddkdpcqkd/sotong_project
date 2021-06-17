@@ -110,7 +110,7 @@ function Login({navigation}) {
                         styles = {styles.textInput}
                         placeholder="User"
                         placeholderTextColor="rgba(255,255,255,1)"
-                    ></TextInput>
+                    ></TextInput> 
                 </View>
                 {/* PW 입력창 */}
                 <View style={styles.password}>

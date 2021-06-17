@@ -22,3 +22,32 @@ mutation saveSotongUser( $id : Float! $user_email: String!, $password: String!, 
   saveSotongUser( id : $id, user_email : $user_email, password : $password, phone_number : $phone_number, social_token : $social_token)
 }
 `;
+
+export const GET_POSTS = gql`
+query {
+  	posts{
+		id  
+		user_email
+		big_category
+		small_category
+		title
+		content
+		create_date
+		sotongUser{
+		nick_name
+		}
+  	}
+}`;
+
+export const GET_POST_REPLY = gql`
+  	query postReply($post_id : Float!){
+	  	postReply(post_id : $post_id) {
+			id
+			post_id
+			content
+			create_date
+			sotongUser{
+			  nick_name
+			}
+	 	}
+  	}`;

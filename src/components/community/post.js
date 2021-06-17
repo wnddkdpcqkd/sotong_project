@@ -86,7 +86,11 @@ export default function post(props) {
 
             {/* Body-IMG 부분 */}
             <View style={styles.bodyImageContainer}>        
-                {showImage(props.postImage)}     
+                { 
+                console.log(props.postImage)}
+                {
+                props.postImage && showImage(props.postImage)
+                }     
             </View>
 
             
