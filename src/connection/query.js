@@ -51,3 +51,11 @@ export const GET_POST_REPLY = gql`
 			}
 	 	}
   	}`;
+
+export const GET_POST_CATEGORY = gql`
+query{
+	postCategorys{
+	  id
+	  content
+	}
+  }`; 
