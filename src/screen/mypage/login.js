@@ -54,17 +54,25 @@ function Login({navigation}) {
         // }
 
         //  token id 가 있으면 정보받아오고 없으면 아이디 생성
+        const date = new Date();
         add_social_user({ variables: {
-            id : 1,
-            user_email : profileResult.response.email,
-            password : "1234",
-            phone_number : profileResult.response.mobile,
-            social_token : profileResult.response.id
+            email : profileResult.response.email,
+            password : '',
+            nick_name : profileResult.name,
+            name : profileResult.name,
+            phone : profileResult.response.mobile,
+            social_token : profileResult.response.id,
+            modify_date : date
         }})
         
         AsyncStorage.setItem('loginMethod','naver');
         AsyncStorage.setItem('token',JSON.stringify(token));
-        
+        AsyncStorage.setItem('profile',JSON.stringify({    
+            email : profileResult.response.email,
+            nick_name : profileResult.name,
+            name : profileResult.name,
+            phone : profileResult.response.mobile,
+            social_token : profileResult.response.id,}))
         setLoginCheck(true)
     }
 

@@ -33,7 +33,7 @@ const App = ({navigation}) => {
 	/////////////////////////   로그인 체크   ///////////////////////////
 	////////////////////////////////////////////////////////////////////
 	const {loginCheck, setLoginCheck} = React.useContext(GlobalVar)
-	const loginToken = AsyncStorage.getItem('loginMethod', (err,result) => {
+	AsyncStorage.getItem('loginMethod', (err,result) => {
 		
 		/////	네이버 소셜 로그인
 		if(result === 'naver' ){
@@ -50,8 +50,11 @@ const App = ({navigation}) => {
 
 		}
 	})
-
-
+	AsyncStorage.getItem('profile',(err,result) => {
+		const profile = JSON.parse(result)
+		console.log("[home] profile : " , profile);
+	})
+	
 
 
 

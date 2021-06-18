@@ -18,8 +18,8 @@ mutation saveUser( $id: Float!, $identification: String, $user_password: String!
 `;
 
 export const ADD_SOCIAL_USER = gql`
-mutation saveSotongUser( $id : Float! $user_email: String!, $password: String!, $phone_number: String, $social_token: String ){
-  saveSotongUser( id : $id, user_email : $user_email, password : $password, phone_number : $phone_number, social_token : $social_token)
+mutation saveSotongUser( $email: String!, $password: String!, $nick_name: String, $name : String, $phone: String, $social_token: String, $modify_date : DateTime){
+  saveSotongUser( email : $email, password : $password, nick_name : $nick_name, name : $name, phone : $phone, social_token : $social_token, modify_date : $modify_date)
 }
 `;
 

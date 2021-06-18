@@ -30,11 +30,7 @@ export default function community({navigation}) {
 		if (getPost && getPost.posts) 
 			setPosts(getPost.posts);
 		if (getCategory && getCategory.postCategorys){
-			const arr = getCategory.postCategorys;
-			if (arr[0].id !== 0 ){
-				arr.unshift({id : 0, content : '전체'})
-			}
-			setCategory(arr);
+			setCategory(getCategory.postCategorys);
 		}
 	},[getPost,getCategory])
 	/////////////////////////////게시물 받아오기/////////////////////////
@@ -105,6 +101,13 @@ export default function community({navigation}) {
 
 			{/* SMALL 카테고리 버튼 (전체, 고민, 리뷰, 질문, 병원 ...) */}
 			<View style={styles.smallCategory}>
+				<View style={styles. smallCategoryBox}>
+					<TouchableOpacity
+						style={styles.smallCategoryButton}
+					>
+						<Text style={styles.smallCategoryText}> 전체 </Text>
+					</TouchableOpacity>
+				</View>
 				{
 					category ? category.map((item) => {
 						return(
