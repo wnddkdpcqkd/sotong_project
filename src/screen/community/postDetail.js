@@ -1,42 +1,83 @@
 import React, { Component, useState, useEffect } from "react";
-import { StyleSheet, View, Image, Dimensions, ScrollView } from "react-native";
+import { StyleSheet, View, Image, Dimensions, ScrollView, TextInput, TouchableOpacity, Text } from "react-native";
 import Divider from '../../components/common/divider'
 import Reply from '../../components/community/reply'
 import ReplyTextInput from '../../components/community/replyTextInput'
 import Post from '../../components/community/post'
-
-import {useQuery} from '@apollo/react-hooks';
-import { GET_POST_REPLY } from '../../connection/query';
+import { GlobalVar } from '../../GlobalVariables';
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import {useQuery, useMutation, NetworkStatus, useLazyQuery} from '@apollo/react-hooks';
+import { GET_POST_REPLY, ADD_POST_REPLY } from '../../connection/query';
+import { assertScalarType } from "graphql";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-
-const showReply=(replyState) =>{
-    return(
-        replyState.map((item) => {
-            return (
-                <Reply
-                    key={item.id}
-                    profileName={item.profileName}
-                    replyTime={item.replyTime}
-                    replyContent={item.replyContent}
-                />
-            )
-        })
-    )
-}
-
-
 function postDetail({route,navigation}) {
     
-    const {loading, error, data} = useQuery(GET_POST_REPLY, { variables : { post_id : route.params.id }})
+
+    ///////////////////////////////////// 댓글 받아오기 //////////////////////////////////////////
+    //  reply : 댓글
+    const {loading, error, data : postData, } = useQuery(GET_POST_REPLY, { variables : { post_id : route.params.id }});
+    // const [get_post_reply, { loading, error, data : postData, refetch}] = useLazyQuery(GET_POST_REPLY, 
+    //     { 
+    //         variables : { post_id : route.params.id },
+    //     }
+    // );
+
     const [reply, setReply] = useState([]);
-	console.log('[postDetail] data : ',data)
+	//console.log('[postDetail] data : ',data)
     useEffect(() => {
-		if (data && data.postReply) 
-            setReply(data.postReply);
-	},[data])
+		if (postData && postData.postReply) 
+            setReply(postData.postReply);
+	},[postData])
+    ///////////////////////////////////// 댓글 받아오기 //////////////////////////////////////////
+
+    ///////////////////////////////////// 댓글 밀어넣기 //////////////////////////////////////////
+    // 
+    const [ text, setText ] = useState();
+
+    const { loginCheck, setLoginCheck } = React.useContext(GlobalVar)
+    const [ add_post_reply ] = useMutation(ADD_POST_REPLY, {
+        update : (cache, {data : {savePostReply}}) => {
+            const { postReply }  = cache.readQuery({ 
+                query : GET_POST_REPLY, 
+                variables : { post_id : route.params.id }
+            });
+            console.log('postReply : ', postReply)
+            console.log('savePostReply' ,savePostReply)
+            cache.writeQuery({
+                query : GET_POST_REPLY,
+                variables : { post_id : route.params.id },
+                data : { postReply : [...postReply , {__typename: "PostReply", content: "이게되네?", create_date: "2021-06-17T15:00:00.000Z", id: 100, post_id: 1, sotongUser: {__typename: "SotongUser", nick_name: "차규범"}}]}
+            })
+            console.log('여기서는?' , cache.readQuery({
+                query : GET_POST_REPLY, 
+                variables : { post_id : route.params.id }
+            }))
+        },
+        onCompleted(){
+            alert('댓글이 입력되었습니다')
+        }
+    }) 
+
+    function add_reply() {
+        if (loginCheck){
+            AsyncStorage.getItem('profile',(err,result) => {
+                const profile = JSON.parse(result)
+                add_post_reply({variables : {
+                    post_id : route.params.id,
+                    writer_email : profile.email,
+                    content : text
+                }})
+            })            
+        }
+        else {
+            alert("로그인이 필요합니다.")
+        }
+    }
+
+
 
     return (
 
@@ -67,10 +108,14 @@ function postDetail({route,navigation}) {
                                 replyContent={item.content}
                             />
                         )
-                	}) : '' 
+                	}) : <Text>aa</Text> 
 				}
             </View>
+            <Divider color = '#808080'/>
         </ScrollView>
+
+
+
 
 
         {/* 댓글 입력 창 */}
@@ -85,8 +130,11 @@ function postDetail({route,navigation}) {
                     multiline={true}
                     style={styles.input}
                     placeholder="댓글 쓰기"
+                    onChangeText = {(text) => {setText(text)}}
                 />
-                <TouchableOpacity style={styles.submit}>
+                <TouchableOpacity style={styles.submit}
+                    onPress={() => add_reply()}
+                >
                     <Text style={styles.text}> 게시 </Text>
                 </TouchableOpacity>
             </View>

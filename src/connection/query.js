@@ -59,3 +59,9 @@ query{
 	  content
 	}
   }`; 
+
+export const ADD_POST_REPLY = gql `
+mutation savePostReply( $id : Float, $post_id : Float , $writer_email : String , $content : String){
+	savePostReply(id : $id, post_id : $post_id, writer_email : $writer_email, content : $content)
+}
+`;
