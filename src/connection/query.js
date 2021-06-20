@@ -58,10 +58,14 @@ query{
 	  id
 	  content
 	}
-  }`; 
+}`; 
 
 export const ADD_POST_REPLY = gql `
 mutation savePostReply( $id : Float, $post_id : Float , $writer_email : String , $content : String){
 	savePostReply(id : $id, post_id : $post_id, writer_email : $writer_email, content : $content)
-}
-`;
+}`;
+
+export const ADD_POST = gql`
+mutation savePost($user_email : String, $id : Float, $content : String, $small_category : Float , $title : String, $big_category : String){
+	savePost(user_email : $user_email, id : $id, content : $content, small_category : $small_category, title : $title, big_category : $big_category)
+}`;
