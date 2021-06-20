@@ -170,7 +170,7 @@ export default function filter({navigation}) {
         }}>
         {test()}
 
-        {treatmentList.map((item, key) => {
+        {/* {treatmentList.map((item, key) => {
           return (
             <FormButton
               buttonTitle={item}
@@ -182,7 +182,7 @@ export default function filter({navigation}) {
               }}
             />
           );
-        })}
+        })} */}
       </View>
       <View style={{flex: 6}}></View>
       <TouchableOpacity
