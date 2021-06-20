@@ -5,10 +5,11 @@ import Reply from '../../components/community/reply'
 import ReplyTextInput from '../../components/community/replyTextInput'
 import Post from '../../components/community/post'
 import { GlobalVar } from '../../GlobalVariables';
+
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import {useQuery, useMutation, NetworkStatus, useLazyQuery} from '@apollo/react-hooks';
 import { GET_POST_REPLY, ADD_POST_REPLY } from '../../connection/query';
-import { assertScalarType } from "graphql";
+
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -49,7 +50,7 @@ function postDetail({route,navigation}) {
             cache.writeQuery({
                 query : GET_POST_REPLY,
                 variables : { post_id : route.params.id },
-                data : { postReply : [...postReply , {__typename: "PostReply", content: "이게되네?", create_date: "2021-06-17T15:00:00.000Z", id: 100, post_id: 1, sotongUser: {__typename: "SotongUser", nick_name: "차규범"}}]}
+                data : { postReply : [...postReply , savePostReply]}
             })
             console.log('여기서는?' , cache.readQuery({
                 query : GET_POST_REPLY, 
@@ -133,7 +134,7 @@ function postDetail({route,navigation}) {
                     onChangeText = {(text) => {setText(text)}}
                 />
                 <TouchableOpacity style={styles.submit}
-                    onPress={() => add_reply()}
+                    onPress={() => add_reply() }
                 >
                     <Text style={styles.text}> 게시 </Text>
                 </TouchableOpacity>

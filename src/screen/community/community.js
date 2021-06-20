@@ -4,14 +4,16 @@ import Post from '../../components/community/post'
 import ActionButton from 'react-native-action-button';
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import Divider from '../../components/common/divider';
+import { GlobalVar } from '../../GlobalVariables';
 
 import {useQuery} from '@apollo/react-hooks';
 import { GET_POSTS, GET_POST_CATEGORY } from '../../connection/query';
-
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
 
 export default function community({navigation}) {
 
+	const {loginCheck, setLoginCheck} = React.useContext(GlobalVar)
     /////////////////////////////게시물 받아오기/////////////////////////
     const [posts, setPosts] = useState([]);				//게시물 
 	const [category, setCategory] = useState([]);		//카테고리 ( 1: 질문, 2: 고민, 3: 리뷰, 4: 정보)
@@ -164,7 +166,11 @@ export default function community({navigation}) {
 
             {/* Floating 버튼 */}
             <ActionButton buttonColor='#FA8072'>
-                <ActionButton.Item buttonColor='#FA8072' title="게시글 작성" onPress={() => navigation.navigate('writePost')}>
+                <ActionButton.Item buttonColor='#FA8072' title="게시글 작성" onPress={() => 
+					{
+						loginCheck ? navigation.navigate('writePost') : alert('로그인이 필요합니다')
+					}
+						}>
                     <FontAwesomeIcon name="pencil" style={{fontSize : 15}} />
                 </ActionButton.Item>
             </ActionButton>

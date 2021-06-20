@@ -1,13 +1,18 @@
-import { useQuery } from '@apollo/client';
-import React, {Component, useEffect, useState} from 'react'
+import React, {Component, useContext, useEffect, useState} from 'react'
 import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native'
 import Divider from '../../components/common/divider';
-import { GET_POST_CATEGORY } from '../../connection/query';
 
-export default function writePost() {
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import { GET_POST_CATEGORY, ADD_POST } from '../../connection/query';
+import { useQuery, useMutation } from '@apollo/client';
+import { GlobalVar } from '../../GlobalVariables';
 
-    const [contentByte, setContentByte] = useState(0);
+export default function writePost({navigation}) {
+
+    const [postText, setPostText] = useState();         //텍스트 박스 텍스트값
+    const [contentByte, setContentByte] = useState(0);  //텍스트 입력 byte
     
+
     const calculateByte= (str) =>{
         setContentByte(
             str
@@ -18,7 +23,8 @@ export default function writePost() {
     }
 
     
-    ///////////////////// 게시물 카테고리 종류
+
+    ///////////////////// 게시물 카테고리 종류 ///////////////////////////
     const [postCategory, setPostCategory] = useState([])
     const { loading, error , data } = useQuery(GET_POST_CATEGORY)
     useEffect(() => {
@@ -26,8 +32,8 @@ export default function writePost() {
             setPostCategory(data.postCategorys)
         }
     },[data])
-    console.log('[writePost] data.postCategorys : ',data.postCategorys)
-    console.log('[writePost] postCategory: ',postCategory)
+    // console.log('[writePost] data.postCategorys : ',data.postCategorys)
+    // console.log('[writePost] postCategory: ',postCategory)
     //게시물 카테고리를 화면에 뿌려줌
     const showButton=(categoryArray) => {
         return (
@@ -36,6 +42,42 @@ export default function writePost() {
             })
         )   
     }
+    ////////////////////////////////////////////////////////////
+
+
+
+
+
+    ////////////////////  게시물 카테고리 선택 ///////////////////////
+    const [categoryState, setCategoryState] = useState([0,0,0,0]);
+    function setCategoryArr(num) {
+        let newArr = [0,0,0,0]
+        newArr[num] = 1
+        console.log('[writePost] newArr : ' , newArr)
+        setCategoryState(newArr);
+    }
+
+    ////////////////////////////////////////////////////////////
+
+
+
+
+    ///////////////////// 게시글 쓰기 ///////////////////////////////
+    const [ add_post ] = useMutation(ADD_POST)
+    function sendPost() {
+        AsyncStorage.getItem('profile', (err,result) =>{
+            const profile = JSON.parse(result)
+            add_post({variables : {
+                user_email : profile.email,
+                small_category : categoryState.findIndex((item) => item === 1) + 1,
+                title : '',
+                content : postText,
+            }})
+        })
+    }
+    ///////////////////// 게시글 쓰기 ///////////////////////////////
+
+
 
 
     ////////////////////////////////////////////////////////////////////////////////////// 
@@ -64,6 +106,7 @@ export default function writePost() {
                                     <TouchableOpacity
                                         key = {item.id}
                                         style={styles.categoryButton}
+                                        onPress={() => setCategoryArr( item.id -1 )}
                                     >
                                         <Text style={styles.smallCategoryText}> {item.content} </Text>
                                     </TouchableOpacity>
@@ -88,7 +131,11 @@ export default function writePost() {
                         style={styles.textInput}
                         placeholder='내용을 작성해주세요'
                         multiline={true}
-                        onChangeText={(str) => calculateByte(str)}
+                        onChangeText={(str) => {
+                                setPostText(str)
+                                calculateByte(str)
+                            }
+                        }
                     />
                 </View>
 
@@ -116,7 +163,14 @@ export default function writePost() {
 
                 {/* 게시글 제출버튼 */}
                 <View style={styles.submitContainer}>
-                    <TouchableOpacity style={styles.touchableButton}>
+                    <TouchableOpacity style={styles.touchableButton}
+                        onPress = {() => {
+                                sendPost()
+                                alert('게시글 작성 완료.')
+                                navigation.goBack()
+                            }
+                        }
+                    >
                         <Text style={styles.buttonText}> 게시글 작성하기 </Text>
                     </TouchableOpacity>
                 </View>
