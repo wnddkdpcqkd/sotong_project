@@ -1,9 +1,13 @@
 import React, { Component } from "react";
-import { StyleSheet, View, StatusBar, ImageBackground, Text, TextInput, TouchableOpacity, Image, Platform } from "react-native";
+import { StyleSheet, View, StatusBar, ImageBackground, Text, TextInput, TouchableOpacity, Image, } from "react-native";
 import EvilIconsIcon from "react-native-vector-icons/EvilIcons";
 import Button from "../../components/common/Button";
 import { NaverLogin, getProfile } from '@react-native-seoul/naver-login';
 import { GlobalVar } from '../../GlobalVariables';
+import { useMutation } from '@apollo/react-hooks';
+import { ADD_SOCIAL_USER } from '../../connection/query';
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
+
 
 
 const loginBackground = "../../assets/image/login_background.jpg"
@@ -15,48 +19,82 @@ const initials = {
     kServiceAppName: '소통',
   };
 
-function Login() {
+function Login({navigation}) {
 
     const {loginCheck, setLoginCheck} = React.useContext(GlobalVar)
     const [naverToken, setNaverToken] = React.useState(null);
 
+    const [add_social_user] = useMutation(ADD_SOCIAL_USER);
+
+
+    ////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////     네이버 로그인     /////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////
+    //로그인
     const naverLogin = props => {
     return new Promise((resolve, reject) => {
         NaverLogin.login(props, (err, token) => {
+        //네이버 로그인 성공시
         console.log(`\n\n  Token is fetched  :: ${token} \n\n`);
         setNaverToken(token);
         if (err) {
+            //네이버 로그인 실패
             reject(err);
             return;
         }
         resolve(token);
-        setLoginCheck(true);
-        });
-    });
-    };
+        }); 
+    }).then( async (token) => {
+        const profileResult = await getProfile(token.accessToken);
+        /////////////////////////user 정보 DB에 넣어야 함/////////////////////////
 
+        // if (profileResult.resultcode === '024') {
+        //     Alert.alert('로그인 실패', profileResult.message);
+        //     return;
+        // }
+
+        //  token id 가 있으면 정보받아오고 없으면 아이디 생성
+        const date = new Date();
+        add_social_user({ variables: {
+            email : profileResult.response.email,
+            password : '',
+            nick_name : profileResult.name,
+            name : profileResult.name,
+            phone : profileResult.response.mobile,
+            social_token : profileResult.response.id,
+            modify_date : date
+        }})
+        
+        AsyncStorage.setItem('loginMethod','naver');
+        AsyncStorage.setItem('token',JSON.stringify(token));
+        AsyncStorage.setItem('profile',JSON.stringify({    
+            email : profileResult.response.email,
+            nick_name : profileResult.name,
+            name : profileResult.name,
+            phone : profileResult.response.mobile,
+            social_token : profileResult.response.id,}))
+        setLoginCheck(true)
+    }
+
+    );
+    };
+    
+ 
+
+    ////////////////////////////////////////////////////////////////////////////////
+    //로그아웃
     const naverLogout = () => {
     NaverLogin.logout();
     setNaverToken(null);
     };
-
-    const getUserProfile = async () => { 
-    const profileResult = await getProfile(naverToken.accessToken);
-    if (profileResult.resultcode === '024') {
-        Alert.alert('로그인 실패', profileResult.message);
-        return;
-    }
-    console.log('profileResult', profileResult);
-    };
-
-
+    ////////////////////////////////////////////////////////////////////////////////
   return (
     <View style={styles.root}>
       
         {/* 백그라운드 img */}
         <View style={styles.background}>
         <ImageBackground
-          style={styles.rect}
+          style={styles.background}
           source={require(loginBackground)}
         >
 
@@ -80,7 +118,7 @@ function Login() {
                         styles = {styles.textInput}
                         placeholder="User"
                         placeholderTextColor="rgba(255,255,255,1)"
-                    ></TextInput>
+                    ></TextInput> 
                 </View>
                 {/* PW 입력창 */}
                 <View style={styles.password}>
@@ -162,8 +200,8 @@ function Login() {
         <View style={styles.footer}>
             {/* 계정 생성 */}
             <TouchableOpacity
-                // onPress={() => props.navigation.navigate("SignUp")}
-                onPress={() => alert("가입창 만들어야됨")}
+                onPress={() => navigation.navigate("createAccount")}
+                //onPress={() => alert("가입창 만들어야됨")}
                 style={styles.createAccount}
             >
                 <Text style={styles.createAccount} >Create Account</Text>
@@ -191,9 +229,6 @@ const styles = StyleSheet.create({
         backgroundColor: "rgb(255,255,255)"
     },
     background: {
-        flex: 1
-    },
-    rect: {
         flex: 1
     },
     innerBox: {
@@ -252,6 +287,14 @@ const styles = StyleSheet.create({
         width : 59,
         marginRight : 10,
     },
+    loginText: {
+        fontSize : 30,
+        alignSelf : "center",
+        color: "white",
+        marginRight : 20,
+        marginLeft : 30,
+    },
+    
     naverLoginButton :{
         height : 50,
         width : 160,
@@ -263,13 +306,7 @@ const styles = StyleSheet.create({
         height : 50,
         width : 160,
     },
-    loginText: {
-        fontSize : 30,
-        alignSelf : "center",
-        color: "white",
-        marginRight : 20,
-        marginLeft : 30,
-    },
+
     socialLoginButton:{
         marginTop : 30,
         flexDirection : "row",

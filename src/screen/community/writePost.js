@@ -1,10 +1,12 @@
-import React, {Component, useState} from 'react'
+import { useQuery } from '@apollo/client';
+import React, {Component, useEffect, useState} from 'react'
 import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native'
 import Divider from '../../components/common/divider';
+import { GET_POST_CATEGORY } from '../../connection/query';
 
 export default function writePost() {
 
-    const [contentByte, setContentByte] = useState();
+    const [contentByte, setContentByte] = useState(0);
     
     const calculateByte= (str) =>{
         setContentByte(
@@ -15,15 +17,22 @@ export default function writePost() {
         );
     }
 
-
-    //게시물 카테고리 종류
-    const [postCategory, setPostCategory] = useState(['질문','고민','리뷰','정보']);
-
+    
+    ///////////////////// 게시물 카테고리 종류
+    const [postCategory, setPostCategory] = useState([])
+    const { loading, error , data } = useQuery(GET_POST_CATEGORY)
+    useEffect(() => {
+        if(data && data.postCategorys){
+            setPostCategory(data.postCategorys)
+        }
+    },[data])
+    console.log('[writePost] data.postCategorys : ',data.postCategorys)
+    console.log('[writePost] postCategory: ',postCategory)
     //게시물 카테고리를 화면에 뿌려줌
     const showButton=(categoryArray) => {
         return (
             categoryArray.map((categoryName,key) => {
-                return <Button title={categoryName} />
+                return <Button key={key} title={categoryName} />
             })
         )   
     }
@@ -43,25 +52,49 @@ export default function writePost() {
                 {/* 카테고리 버튼 */}
                 <View style={styles.header}>
                     
-
-                    <Text style={styles.textStyle}> 카테고리 </Text>
-                    <View style={styles.categoryButton}>
-                        {showButton(postCategory)}
+                    <View style={{height : '40%' }}>
+                        <Text style={styles.textStyle}> 카테고리 </Text>
+                    </View>
+                    
+                    <View style={styles.categoryContainer}>
+                        {
+                            postCategory ? postCategory.map((item) =>{
+                                return (
+                                    <View key={item.id} style ={styles.categoryBox}>
+                                    <TouchableOpacity
+                                        key = {item.id}
+                                        style={styles.categoryButton}
+                                    >
+                                        <Text style={styles.smallCategoryText}> {item.content} </Text>
+                                    </TouchableOpacity>
+                                    </View>
+                                )
+                            }) : ''
+                        }
                     </View>
                 </View>
+
+
+
+
 
                 {/* 텍스트 입력란 */}
                 <View style={styles.textInputContainer} >
                     <View style={styles.textInputHeader} >
                         <Text style={styles.textStyle}> 게시글 작성 </Text>
-                        <Text style={styles.textStyle}> 0 / 1000</Text>
+                        <Text style={styles.textStyle}> {contentByte} / 1000</Text>
                     </View>
                     <TextInput 
                         style={styles.textInput}
                         placeholder='내용을 작성해주세요'
                         multiline={true}
+                        onChangeText={(str) => calculateByte(str)}
                     />
                 </View>
+
+
+
+
 
 
                 {/* 이미지 업로드 */}
@@ -75,6 +108,11 @@ export default function writePost() {
                         <Text>이미지업로드 이미지</Text>
                     </View>
                 </View>
+
+
+
+
+
 
                 {/* 게시글 제출버튼 */}
                 <View style={styles.submitContainer}>
@@ -102,16 +140,32 @@ const styles = StyleSheet.create({
         backgroundColor : 'white',
     },
     header : {
-        flex : 1,
+        height : '15%',
     },
     headerText:{
         fontSize : 15,
         marginLeft : 15,
         marginTop : 15,
     },
-    categoryButton :{
+    categoryContainer :{
+        flex : 1,
         flexDirection : 'row',
-        
+        height : '7%',
+    },
+    categoryBox : {
+        flex : 1,
+		alignItems : 'center',
+		//justifyContent : 'center'
+    },
+    categoryButton :{
+        backgroundColor: '#ffffff',
+		borderColor: '#FA8072',
+		borderWidth:1,
+		alignItems: 'center',
+		justifyContent: 'center',
+		borderRadius: 15,
+		height : 30,
+		width : 60,
     },
     textInputContainer:{
         flex : 3,
@@ -133,7 +187,6 @@ const styles = StyleSheet.create({
     },
     imageUpload:{
         flex : 2,
-
     },
     submitContainer:{
         flex : 1,

@@ -7,8 +7,7 @@ import PostDetail from '../screen/community/postDetail'
 import WritePost from '../screen/community/writePost';
 //import Search from '../screen/mapSearch/searchPage';
 import filter from '../screen/searchInst/filter';
-import loginButtonPage from '../screen/mypage/loginButtonPage';
-
+import createAccount from '../screen/mypage/createAccount';
 
 const Stack = createStackNavigator();
 
@@ -58,11 +57,11 @@ export default function stack({navigation}){ //screen들간의 구조를 선언
           headerShown: false,
         }}
       />
-        <Stack.Screen
-        name="loginButtonPage"
-        component={loginButtonPage}
+      <Stack.Screen
+        name="createAccount"
+        component={createAccount}
         options={{
-          title: '로그인',
+          title: '계정 생성',
           headerShown: false,
         }}
       />

@@ -6,8 +6,12 @@ import LogoIMG from '../../components/common/logoIMG'
 import HomeText from '../../components/home/homeText'
 import HomeSlider from '../../components/home/homeSlider'
 import { institution } from '../../connection/query';
+import { GlobalVar } from '../../GlobalVariables';
 
-
+////////////로그인 체크////////////
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import { NaverLogin, getProfile } from '@react-native-seoul/naver-login';
+//////////////////////////////////
 
 
 
@@ -18,17 +22,39 @@ import { type } from 'node:os';
 
 
 
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const App = ({navigation}) => {
 
-//const [centerName, setCenterName] = useState();
-//const {centerType, setCenterType} = useContext(SearchContext);
 
+	////////////////////////////////////////////////////////////////////
+	/////////////////////////   로그인 체크   ///////////////////////////
+	////////////////////////////////////////////////////////////////////
+	const {loginCheck, setLoginCheck} = React.useContext(GlobalVar)
+	AsyncStorage.getItem('loginMethod', (err,result) => {
+		
+		/////	네이버 소셜 로그인
+		if(result === 'naver' ){
+			const loginMethod = AsyncStorage.getItem('token', async (err,result) => {
 
+				const token = JSON.parse(result)
+				const profileResult = await getProfile(token.accessToken);
+					
+				if(profileResult.message === "success"){
+					setLoginCheck(true);
+				}
+				
+			})
 
-
+		}
+	})
+	AsyncStorage.getItem('profile',(err,result) => {
+		const profile = JSON.parse(result)
+		console.log("[home] profile : " , profile);
+	})
+	
 
 
 

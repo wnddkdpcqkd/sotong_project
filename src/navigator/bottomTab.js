@@ -11,6 +11,7 @@ import Login from '../screen/mypage/login';
 import naverTest from '../screen/mypage/naverTest'
 import { GlobalVar } from '../GlobalVariables';
 
+
 const Tab = createBottomTabNavigator(); // Tab의 구조 선언
 
 const homeIcon = '../assets/image/home_click.png';
@@ -21,7 +22,7 @@ const TabBarIcon = (focused, name) => {
     iconName = focused ? require(homeIcon) : require(homeIcon);
   } else if (name === '검색') {
     iconName = focused ? require(searchIcon) : require(searchIcon);
-  } else if (name === '구글') {
+  } else if (name === 'f구글') {
     iconName = focused ? require(searchIcon) : require(searchIcon);
   } else if (name === '홈Test') {
     iconName = focused ? require('../assets/image/current_location.png') : require('../assets/image/chat.png');
