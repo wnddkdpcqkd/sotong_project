@@ -28,10 +28,7 @@ import {useQuery} from '@apollo/react-hooks';
 import {getInst} from './getInst';
 import {isTypeSystemDefinitionNode} from 'graphql';
 import {prependOnceListener} from 'node:process';
-<<<<<<< HEAD
 import { gql } from "apollo-boost";
-=======
->>>>>>> 1d9324e63e2e0e95658641dae38c35cb41d34043
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -72,7 +69,6 @@ const treatmentStates = [
   true,
   true,
   true,
-<<<<<<< HEAD
 ];
 
 const findWithCareTypeaSearch = gql`
@@ -169,100 +165,6 @@ export default function googleMap2({navigation}) {
     if (data) {
       console.log(data);
       // setMarkerList(data.Institutions.institution_name);
-=======
-];
-
-const dataset = [
-  {
-    name: '센터1',
-    latitude: 37.564362,
-    longitude: 126.977011,
-    type: 3,
-    care_type: [1, 1, 0, 0, 0, 0, 0, 0],
-  },
-  {
-    name: '센터2',
-    latitude: 37.565051,
-    longitude: 126.978567,
-    type: 3,
-    care_type: [1, 0, 1, 1, 1, 0, 0, 0],
-  },
-  {
-    name: '센터3',
-    latitude: 37.565383,
-    longitude: 126.976292,
-    type: 3,
-    care_type: [1, 0, 1, 0, 0, 1, 1, 1],
-  },
-];
-
-export default function googleMap2({navigation}) {
-  const {centerType, setCenterType} = useContext(GlobalVar);
-  const {location, setLocation} = useContext(GlobalVar);
-
-  ////////////////////////////////////////////////////////////
-  // 마커
-  const {markerList, setMarkerList} = useContext(GlobalVar);
-  const {markerFlag, setMarkerFlag} = useContext(GlobalVar);
-
-  ////////////////////////////////////////////////////////////
-
-  const {
-    treatment,
-    setTreatment,
-    searchCenterType,
-    searchTreatmentType,
-    rere,
-    setRere,
-  } = useContext(GlobalVar);
-  const [centerName, setCenterName] = useState(''); //검색창에 입력된 문자열
-  const [searchResult, setSearchResult] = useState([]);
-  const [flag, setFlag] = useState(false);
-  const [showOne, setShowOne] = useState('');
-  const [currentPos, setCurrentPos] = useState({
-    latitude: 0,
-    longitude: 0,
-    latitudeDelta: 0.015,
-    longitudeDelta: 0.0121,
-  });
-  const [mounted, setMounted] = useState(false);
-
-  const refRBSheet = useRef();
-
-  const {loading, error, data} = useQuery(institution);
-
-  const loadCurrentLoc = () => {
-    const position = Geolocation.getCurrentPosition(
-      position => {
-        setCurrentPos({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-        console.log('현재 latitude  : ', currentPos.latitude);
-        console.log('현재 longitude : ', currentPos.longitude);
-      },
-      error => {
-        console.log(error.code, error.message);
-      },
-    );
-  };
-
-  ////////////////////////////////////////////////////////////////////////////////
-  // 현재 위치
-  if (!mounted) {
-    loadCurrentLoc();
-  }
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-  ////////////////////////////////////////////////////////////////////////////////
-  // marker 전체 띄움
-  useEffect(() => {
-    if (data && data.Institutions) {
-      const arr = data.Institutions;
-      setMarkerList(...markerList, arr);
->>>>>>> 1d9324e63e2e0e95658641dae38c35cb41d34043
     }
   }, [data]);
 
@@ -277,7 +179,6 @@ export default function googleMap2({navigation}) {
   const showMarker = arr => {
     if (arr.length > 0) {
       return arr.map(item => {
-<<<<<<< HEAD
         if (
           Math.abs(item.latitude - currentPos.latitude) <
             currentPos.latitudeDelta / 2 &&
@@ -286,10 +187,6 @@ export default function googleMap2({navigation}) {
         ) {
           return (
             <Marker
-=======
-        if (Math.abs(item.latitude - currentPos.latitude) < currentPos.latitudeDelta/2 && Math.abs(item.longitude - currentPos.longitude) < currentPos.longitudeDelta/2) {
-          return <Marker
->>>>>>> 1d9324e63e2e0e95658641dae38c35cb41d34043
               width={50}
               height={50}
               key={item.id}
@@ -301,17 +198,10 @@ export default function googleMap2({navigation}) {
                 setFlag(true);
               }}
             />
-<<<<<<< HEAD
           );
         }
       });
     }
-=======
-            }
-        }
-      )
-      };
->>>>>>> 1d9324e63e2e0e95658641dae38c35cb41d34043
   };
   ////////////////////////////////////////////////////////////////////////////////
 
@@ -360,17 +250,12 @@ export default function googleMap2({navigation}) {
             console.log(e.nativeEvent.coordinate);
             setFlag(false);
           }}
-<<<<<<< HEAD
           onRegionChange={region => {
-=======
-          onRegionChange={(region)=>{
->>>>>>> 1d9324e63e2e0e95658641dae38c35cb41d34043
             setCurrentPos({
               latitude: region.latitude,
               longitude: region.longitude,
               latitudeDelta: region.latitudeDelta,
               longitudeDelta: region.longitudeDelta,
-<<<<<<< HEAD
             });
           }}
           initialRegion={{
@@ -383,15 +268,6 @@ export default function googleMap2({navigation}) {
               currentPos.longitudeDelta > 0
                 ? currentPos.longitudeDelta
                 : 0.0121,
-=======
-            })
-          }}
-          initialRegion={{
-            latitude: currentPos.latitude > 0 ? currentPos.latitude : 37.564362,
-            longitude: currentPos.longitude > 0 ? currentPos.longitude : 126.977011,
-            latitudeDelta: currentPos.latitudeDelta>0 ? currentPos.latitudeDelta : 0.015,
-            longitudeDelta: currentPos.longitudeDelta>0 ? currentPos.longitudeDelta : 0.0121,
->>>>>>> 1d9324e63e2e0e95658641dae38c35cb41d34043
           }}>
           {/****************************************************************************/}
           {/*			 						마커									 */}
@@ -471,11 +347,7 @@ export default function googleMap2({navigation}) {
                     </View>
                     <View style={{flex: 2}}>
                       <Text style={{fontSize: 16, color: '#000'}}>
-<<<<<<< HEAD
                         {/* {data.institution_name} */}
-=======
-                        {mem.name}
->>>>>>> 1d9324e63e2e0e95658641dae38c35cb41d34043
                       </Text>
                     </View>
                   </TouchableOpacity>

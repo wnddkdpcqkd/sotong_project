@@ -14,9 +14,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function community({navigation}) {
 
 	const {loginCheck, setLoginCheck} = React.useContext(GlobalVar)
-    /////////////////////////////게시물 받아오기/////////////////////////
-    const [posts, setPosts] = useState([]);				//게시물 
-	const [category, setCategory] = useState([]);		//카테고리 ( 1: 질문, 2: 고민, 3: 리뷰, 4: 정보)
+    /////////////////////////////게시물 받아오기/////////////////////////////////////////////////////////////////////////
+    const [postContainer, setPostContainer] = useState([]);			//전체 게시물 담아두는곳
+	const [post, setPost] = useState([]) 							//실제 보여줄 게시물 배열 (smallCategory로 filtering) 
+	const [category, setCategory] = useState([]);					//카테고리 ( 1: 질문, 2: 고민, 3: 리뷰, 4: 정보)
+
 
 	const queryMultiple = () => {
 		const res1 = useQuery(GET_POSTS);
@@ -29,21 +31,56 @@ export default function community({navigation}) {
 	] = queryMultiple()
 
 	useEffect(() => {
-		if (getPost && getPost.posts) 
-			setPosts(getPost.posts);
+		if (getPost && getPost.posts) {
+			setPostContainer(getPost.posts);
+			setPost(getPost.posts)
+		}
 		if (getCategory && getCategory.postCategorys){
 			setCategory(getCategory.postCategorys);
 		}
 	},[getPost,getCategory])
 	/////////////////////////////게시물 받아오기/////////////////////////
 
-	///////////////////////////// SELECT BOX  //////////////////////////
-	const [button1, setButton1] = useState(true)
-	const [button2, setButton2] = useState(false)
-	const [button3, setButton3] = useState(false)
-	///////////////////////////// SELECT BOX  //////////////////////////
+	///////////////////////////// bigCategory BOX  //////////////////////////
+	// [전체, 컨텐츠, 공지사항]
+	const [bigCategoryArr, setBigCategoryArr] = useState([1,0,0])	
+	function bigCategoryEvent(num){
+		let newArr = [0,0,0]
+		newArr[num] = 1
+		setBigCategoryArr(newArr);
+	}
+	///////////////////////////// bigCategory BOX  //////////////////////////
 	
+	///////////////////////////// smallCategory Button  //////////////////////////
+	// 카테고리 [0: 전체, 1: 질문, 2: 고민, 3: 리뷰, 4: 정보]
+	const [ smallCategoryArr, setSmallCategoryArr ] = useState([1,1,1,1,1])
+	function smallCategorySelect(num) {
+		//smallCategoryArr 배열 변경,
+		//post 배열 변경
+		
+		if(num === 0){ 
+			//0 : 전체
+			setSmallCategoryArr([1,1,1,1,1])
+			setPost(postContainer)
+		}
+		else{	
+			// 1,2,3,4 : 선택된 카테고리들에 해당하는것만 보여줌
+			let tmpArr = [0,0,0,0,0]
+			tmpArr[num] = 1
 
+
+			let tmpPost = []
+			postContainer.map((item) => {
+				if(tmpArr[item.small_category])
+					tmpPost.push(item)
+			})
+
+			setPost(tmpPost)
+			setSmallCategoryArr(tmpArr)
+
+		}
+	}
+	///////////////////////////// smallCategory Button  //////////////////////////
 
 
     return (
@@ -67,32 +104,20 @@ export default function community({navigation}) {
 			{/* BIG 카테고리 버튼 */}
 			<View style={styles.bigCategory}>
 				<TouchableOpacity 
-					style={[{backgroundColor: button1? '#FA8072' : '#ffffff'},styles.bigCategoryButton]}
-					onPress = {() => {
-						setButton1(true)
-						setButton2(false)
-						setButton3(false)
-					}}
+					style={[{backgroundColor: bigCategoryArr[0]? '#FA8072' : '#ffffff'},styles.bigCategoryButton]}
+					onPress = {() => bigCategoryEvent(0)}
 				>
 					<Text style={styles.bigCategoryText}> 전체 </Text>
 				</TouchableOpacity>
 				<TouchableOpacity 
-					style={[{backgroundColor: button2? '#FA8072' : '#ffffff'},styles.bigCategoryButton]}
-					onPress = {() => {
-						setButton1(false)
-						setButton2(true)
-						setButton3(false)
-					}}
+					style={[{backgroundColor: bigCategoryArr[1]? '#FA8072' : '#ffffff'},styles.bigCategoryButton]}
+					onPress = {() => bigCategoryEvent(1)}
 				>
 					<Text style={styles.bigCategoryText}> 컨텐츠 </Text>
 				</TouchableOpacity>
 				<TouchableOpacity 
-					style={[{backgroundColor: button3? '#FA8072' : '#ffffff'},styles.bigCategoryButton]}
-					onPress = {() => {
-						setButton1(false)
-						setButton2(false)
-						setButton3(true)
-					}}
+					style={[{backgroundColor: bigCategoryArr[2]? '#FA8072' : '#ffffff'},styles.bigCategoryButton]}
+					onPress = {() => bigCategoryEvent(2)}
 				>
 					<Text style={styles.bigCategoryText}> 공지사항 </Text>
 				</TouchableOpacity>
@@ -101,11 +126,21 @@ export default function community({navigation}) {
 
 
 
+
+
+
+
+
+
+
+
 			{/* SMALL 카테고리 버튼 (전체, 고민, 리뷰, 질문, 병원 ...) */}
 			<View style={styles.smallCategory}>
 				<View style={styles. smallCategoryBox}>
+					
 					<TouchableOpacity
-						style={styles.smallCategoryButton}
+						style={[{backgroundColor : smallCategoryArr[0] ? '#FFBCBC' : '#ffffff'},styles.smallCategoryButton]}
+						onPress = { () => smallCategorySelect(0)}
 					>
 						<Text style={styles.smallCategoryText}> 전체 </Text>
 					</TouchableOpacity>
@@ -116,7 +151,8 @@ export default function community({navigation}) {
 							<View key={item.id} style ={styles.smallCategoryBox}>
 								<TouchableOpacity
 									key = {item.id}
-									style={styles.smallCategoryButton}
+									style={[{backgroundColor : smallCategoryArr[item.id] ? '#FFBCBC' : '#ffffff'},styles.smallCategoryButton]}
+									onPress = { () => smallCategorySelect(item.id)}
 								>
 									<Text style={styles.smallCategoryText}> {item.content} </Text>
 								</TouchableOpacity>
@@ -142,7 +178,7 @@ export default function community({navigation}) {
             {/* 게시글 */}
             <ScrollView>
                 {
-					posts ? posts.map((item) => {
+					post ? post.map((item) => {
 						return(
 							<View key = {item.id}> 
 								<TouchableOpacity onPress={()=> navigation.navigate('postDetail',item)}>
@@ -222,7 +258,6 @@ const styles = StyleSheet.create({
 		justifyContent : 'center'
 	},
 	smallCategoryButton: {
-		backgroundColor: '#ffffff',
 		borderColor: '#FA8072',
 		borderWidth:1,
 		alignItems: 'center',
