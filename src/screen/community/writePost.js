@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'rea
 import Divider from '../../components/common/divider';
 
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
-import { GET_POST_CATEGORY, ADD_POST } from '../../connection/query';
+import { GET_POST_CATEGORY, ADD_POST, GET_POSTS } from '../../connection/query';
 import { useQuery, useMutation } from '@apollo/client';
 import { GlobalVar } from '../../GlobalVariables';
 
@@ -63,7 +63,10 @@ export default function writePost({navigation}) {
 
 
     ///////////////////// 게시글 쓰기 ///////////////////////////////
-    const [ add_post ] = useMutation(ADD_POST)
+    const [ add_post ] = useMutation(ADD_POST,
+        {
+            refetchQueries : [ { query : GET_POSTS }]
+        })
     function sendPost() {
         AsyncStorage.getItem('profile', (err,result) =>{
             const profile = JSON.parse(result)

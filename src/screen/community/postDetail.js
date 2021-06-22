@@ -31,6 +31,7 @@ function postDetail({route,navigation}) {
     useEffect(() => {
 		if (postData && postData.postReply) 
             setReply(postData.postReply);
+		console.log(postData);
 	},[postData])
     ///////////////////////////////////// 댓글 받아오기 //////////////////////////////////////////
 
@@ -40,29 +41,17 @@ function postDetail({route,navigation}) {
 
     const { loginCheck, setLoginCheck } = React.useContext(GlobalVar)
     const [ add_post_reply ] = useMutation(ADD_POST_REPLY, {
-        update : (cache, {data : {savePostReply}}) => {
-            const { postReply }  = cache.readQuery({ 
-                query : GET_POST_REPLY, 
-                variables : { post_id : route.params.id }
-            });
-            console.log('postReply : ', postReply)
-            console.log('savePostReply' ,savePostReply)
-            cache.writeQuery({
-                query : GET_POST_REPLY,
-                variables : { post_id : route.params.id },
-                data : { postReply : [...postReply , savePostReply]}
-            })
-            console.log('여기서는?' , cache.readQuery({
-                query : GET_POST_REPLY, 
-                variables : { post_id : route.params.id }
-            }))
-        },
-        onCompleted(){
-            alert('댓글이 입력되었습니다')
-        }
-    }) 
+        	refetchQueries : [{
+            	query : GET_POST_REPLY,
+            	variables : { post_id : route.params.id }
+			}]
+		}
+    ) 
 
-    function add_reply() {
+	
+	
+    
+	function add_reply() {
         if (loginCheck){
             AsyncStorage.getItem('profile',(err,result) => {
                 const profile = JSON.parse(result)
@@ -71,6 +60,8 @@ function postDetail({route,navigation}) {
                     writer_email : profile.email,
                     content : text
                 }})
+				alert('댓글이 입력되었습니다')
+				setText('')
             })            
         }
         else {
@@ -132,9 +123,10 @@ function postDetail({route,navigation}) {
                     style={styles.input}
                     placeholder="댓글 쓰기"
                     onChangeText = {(text) => {setText(text)}}
+					value = {text}
                 />
                 <TouchableOpacity style={styles.submit}
-                    onPress={() => add_reply() }
+					onPress={() => { add_reply() }}
                 >
                     <Text style={styles.text}> 게시 </Text>
                 </TouchableOpacity>

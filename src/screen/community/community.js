@@ -1,12 +1,13 @@
-import React, {Component, useState, useEffect} from 'react'
-import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity  } from 'react-native'
+import React, {Component, useState, useEffect, useCallback} from 'react'
+import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, Button  } from 'react-native'
 import Post from '../../components/community/post'
 import ActionButton from 'react-native-action-button';
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import Divider from '../../components/common/divider';
 import { GlobalVar } from '../../GlobalVariables';
 
-import {useQuery} from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
+import { useFocusEffect, useIsFocused  } from '@react-navigation/native';
 import { GET_POSTS, GET_POST_CATEGORY } from '../../connection/query';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
@@ -25,15 +26,18 @@ export default function community({navigation}) {
 		const res2 = useQuery(GET_POST_CATEGORY);
 		return [res1, res2];
 	}
+
 	const [
-		  { loading: loading1, data: getPost },
+		  { loading: loading1, data: getPost, refetch : refetchPosts },
 		  { loading: loading2, data: getCategory }
 	] = queryMultiple()
 
+
 	useEffect(() => {
 		if (getPost && getPost.posts) {
-			setPostContainer(getPost.posts);
-			setPost(getPost.posts)
+			let pstarr = getPost.posts.reverse()
+			setPostContainer(pstarr)
+			setPost(pstarr)
 		}
 		if (getCategory && getCategory.postCategorys){
 			setCategory(getCategory.postCategorys);
@@ -87,7 +91,6 @@ export default function community({navigation}) {
 
         
         <View style={{flex : 1, backgroundColor : 'white'}}>
-
 
 
 
