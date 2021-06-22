@@ -1,5 +1,12 @@
 import 'react-native-gesture-handler';
-import React, {useState, useRef, useContext, useEffect} from 'react';
+import React, {
+  useState,
+  useRef,
+  useContext,
+  useEffect,
+  useCallback,
+} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
 import {
   View,
   Text,
@@ -23,12 +30,11 @@ import Geolocation from 'react-native-geolocation-service'; //iOS 참조링크: 
 import ConditionalSearchView from '../../components/searchInst/conditionalSearchView';
 import TextSearchView from '../../components/searchInst/textSearchView';
 import BriefInfoView from '../../components/searchInst/briefInfoView';
-import {institution} from '../../connection/query';
+import {institution, findWithCareTypeaSearch} from '../../connection/query';
 import {useQuery} from '@apollo/react-hooks';
 import {getInst} from './getInst';
 import {isTypeSystemDefinitionNode} from 'graphql';
 import {prependOnceListener} from 'node:process';
-import { gql } from "apollo-boost";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -71,24 +77,6 @@ const treatmentStates = [
   true,
 ];
 
-const findWithCareTypeaSearch = gql`
-query findWithCareTypeaSearch(
-    $careTypes: [Float!],  
-  ) {
-    findWithCareTypeaSearch(
-    careTypes: $careTypes,
-  ) {
-    institution_name
-    latitude
-    longitude
-    id
-    CareTypes {
-      category
-    }
-  }
-}
-`;
-
 export default function googleMap2({navigation}) {
   const {centerType, setCenterType} = useContext(GlobalVar);
   const {location, setLocation} = useContext(GlobalVar);
@@ -111,7 +99,7 @@ export default function googleMap2({navigation}) {
   const [centerName, setCenterName] = useState(''); //검색창에 입력된 문자열
   const [searchResult, setSearchResult] = useState([]);
   const [flag, setFlag] = useState(false);
-  const [showOne, setShowOne] = useState('');
+  const [showOne, setShowOne] = useState();
   const [currentPos, setCurrentPos] = useState({
     latitude: 0,
     longitude: 0,
@@ -123,8 +111,9 @@ export default function googleMap2({navigation}) {
   const refRBSheet = useRef();
 
   // const {loading, error, data_institution} = useQuery(institution);
-  const {loading, error, data} = useQuery(findWithCareTypeaSearch, {variables: {careTypes: searchTreatmentType}});
-
+  const {loading, error, data, refetch} = useQuery(findWithCareTypeaSearch, {
+    variables: {careTypes: searchTreatmentType},
+  });
 
   const loadCurrentLoc = () => {
     const position = Geolocation.getCurrentPosition(
@@ -143,7 +132,7 @@ export default function googleMap2({navigation}) {
   };
 
   ////////////////////////////////////////////////////////////////////////////////
-  // 현재 위치
+  // 현재 위치에서 지도 보이게 함.
   if (!mounted) {
     loadCurrentLoc();
   }
@@ -160,21 +149,33 @@ export default function googleMap2({navigation}) {
   //   }
   // }, [data_institution]);
 
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+      console.log('Refetched!');
+      console.log(
+        'Length of refetched list:',
+        // data.findWithCareTypeaSearch.length,
+      );
+    }, []),
+  );
+
   // 필터조건 중 치료과목에 맞는 marker만 띄움
   useEffect(() => {
     if (data) {
-      console.log(data);
-      // setMarkerList(data.Institutions.institution_name);
+      // console.log('Length of raw data:', data.findWithCareTypeaSearch.length);
+      console.log('data changed');
+      setMarkerList(data.findWithCareTypeaSearch);
     }
   }, [data]);
 
   // marker데이터 들어오면 markerFlag : true
   useEffect(() => {
     if (markerList.length > 0) {
+      console.log('Length of list:', markerList.length);
       setMarkerFlag(true);
     }
   }, [markerList]);
-
   // markerList 내의 아이템들 화면에 띄워줌 (현위치 기준으로 근처에 있는 것만 보여주고 지도상에서 위치 옮기면 그 근처에 있는 것만 보여줌)
   const showMarker = arr => {
     if (arr.length > 0) {
@@ -194,7 +195,7 @@ export default function googleMap2({navigation}) {
               image={require(markerIMG)}
               title={item.institution_name}
               onPress={() => {
-                setShowOne(item.institution_name);
+                setShowOne(item);
                 setFlag(true);
               }}
             />
@@ -288,23 +289,9 @@ export default function googleMap2({navigation}) {
         {flag && (
           <BriefInfoView
             imageSource={require('../../assets/image/filter.png')}
-            instName={showOne}
-            instInfo="아무거나"
+            instName={showOne.institution_name}
+            instInfo={showOne.id}
           />
-          // <View style={styles.selectedMarker}>
-          //   <View style={{flex: 1}}>
-          //     <Image
-          //       style={{
-          //         width: windowHeight / 8,
-          //         height: windowHeight / 8,
-          //       }}
-          //       source={require('../../assets/image/filter.png')}
-          //     />
-          //   </View>
-          //   <View style={{flex: 4}}>
-          //     <Text style={{fontSize: 16, color: '#000'}}>{showOne.name}</Text>
-          //   </View>
-          // </View>
         )}
       </View>
 
@@ -323,37 +310,21 @@ export default function googleMap2({navigation}) {
         }}
         height={windowHeight * 0.9}>
         <ScrollView>
-          {searchResult.map((mem, key) => {
-            if (searchCenterType[0] || searchCenterType[mem.type]) {
-              //센터유형 맞는 경우에만 보여줌.
-              if (arrayMultiplication(searchTreatmentType, mem.care_type)) {
-                console.log(
-                  key,
-                  '번째 treatment type 맞는지 여부는? ',
-                  arrayMultiplication(searchTreatmentType, mem.care_type),
-                );
-                return (
-                  <TouchableOpacity
-                    key={key}
-                    style={styles.searchResultList}
-                    onPress={() => {
-                      //개별기관 정보페이지로
-                    }}>
-                    <View style={{flex: 1}}>
-                      <Image
-                        style={styles.instIcon}
-                        source={require('../../assets/image/filter.png')}
-                      />
-                    </View>
-                    <View style={{flex: 2}}>
-                      <Text style={{fontSize: 16, color: '#000'}}>
-                        {/* {data.institution_name} */}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                );
-              }
-            }
+          {data && <Text style={{textAlign: 'center'}}>
+            {data.findWithCareTypeaSearch.length}개의 검색 결과가 있습니다.
+          </Text>}
+          {data && data.findWithCareTypeaSearch.map((mem, key) => {
+            return (
+              <TouchableOpacity
+                key={key}
+                style={styles.searchResultList}
+                onPress={() => {
+                  //개별기관 정보페이지로
+                }}>
+                <Text style={{fontSize: 16}}>{mem.institution_name}</Text>
+                <Text style={{fontSize: 14}}>{mem.address}</Text>
+              </TouchableOpacity>
+            );
           })}
         </ScrollView>
       </RBSheet>
