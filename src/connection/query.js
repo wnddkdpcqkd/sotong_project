@@ -69,3 +69,22 @@ export const ADD_POST = gql`
 mutation savePost($user_email : String, $id : Float, $content : String, $small_category : Float , $title : String, $big_category : String){
 	savePost(user_email : $user_email, id : $id, content : $content, small_category : $small_category, title : $title, big_category : $big_category)
 }`;
+
+export const findWithCareTypeaSearch = gql`
+query findWithCareTypeaSearch(
+    $careTypes: [Float!],  
+  ) {
+    findWithCareTypeaSearch(
+    careTypes: $careTypes,
+  ) {
+    institution_name
+    latitude
+    longitude
+    id
+	address
+	CareTypes{
+		category
+	}
+  }
+}
+`;
