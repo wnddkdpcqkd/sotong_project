@@ -74,7 +74,7 @@ function postDetail({route,navigation}) {
     return (
 
     <View style={{flex : 1, backgroundColor : 'white'}}>
-        <ScrollView>
+        <ScrollView style={{flex : 1}}>
 
             {/* 게시글 */}
             <Post
@@ -83,7 +83,7 @@ function postDetail({route,navigation}) {
                 profileName={route.params.profileName}
                 profileTime={route.params.profileTime}
             />
-            <Divider color='#808080'/>
+            <Divider color='#D4D4D4' height={2}/>
                 
 
 
@@ -91,7 +91,7 @@ function postDetail({route,navigation}) {
             {/* 댓글 */}
             <View>
                 {   
-					reply ?	reply.map((item) => {
+					reply.length > 0 ?	reply.map((item) => {
                         return (
                             <Reply
                                 key={item.id}
@@ -100,10 +100,21 @@ function postDetail({route,navigation}) {
                                 replyContent={item.content}
                             />
                         )
-                	}) : <Text>aa</Text> 
+                    }) : 
+
+                    //댓글이 없을 때
+                    (
+                        <View style={styles.noReplyContainer}>
+                            <Text style={styles.noReplyText}>등록된 댓글이 없습니다.</Text>
+                            <Text style={styles.noReplyText}>첫 댓글을 남겨주세요</Text>
+                        </View>    
+                    )
+
+                    
+
 				}
             </View>
-            <Divider color = '#808080'/>
+            
         </ScrollView>
 
 
@@ -111,6 +122,7 @@ function postDetail({route,navigation}) {
 
 
         {/* 댓글 입력 창 */}
+        <Divider color = '#D4D4D4' height={2} />
         <View style={styles.container}>
             <Image 
                 style={styles.image}
@@ -144,7 +156,7 @@ const styles = StyleSheet.create({
     container :{
         flexDirection: 'row',
         height: 60,
-        backgroundColor: '#E3E3E3',
+        backgroundColor: 'white',
         justifyContent : 'center'
     },
     image :{
@@ -164,12 +176,13 @@ const styles = StyleSheet.create({
         marginRight : 30,
         marginLeft : 30,
         height : 40,
-        backgroundColor : '#C4C4C4',
+        backgroundColor : '#ECECEC',
         width : '70%',
-        borderRadius : 25,
+        borderRadius : 15,
         fontSize: 15,
     },
     input : {
+        marginLeft : 10,
         width : '70%', 
     },
     submit: {
@@ -177,9 +190,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     text :{
-        fontSize : 20,
-        color : 'black',
-        fontWeight: 'bold'
+        fontSize : 15,
+        color : '#6D6D6D',
+        fontWeight: 'bold',
+        marginRight : 10,
+    },
+    noReplyContainer: {
+        height : 300,
+        alignItems : 'center',
+        justifyContent : 'center'
+    },
+    noReplyText: {
+        color : '#D4D4D4'
     }
 
 });

@@ -55,19 +55,10 @@ export default function post(props) {
             {/* 헤더부분 */}
             <View style={styles.header}>
             
-                {/* 프로필 IMG */}
-                <View style={{flex : 1 }}>
-                    <Image
-                        source={require("../../assets/image/dog.png")}
-                        resizeMode="cover"
-                        style={styles.profileImage}
-                    />
-                </View>
-
-                {/* 프로필명 */}
+                {/* 제목 */}
                 <View style={{flex : 3, }}>
-                    <Text style={styles.profileName}> {props.profileName || '우에하라 아이'} </Text>
-                    <Text style={styles.prfileTime} > {props.profileTime || '20분 전'}</Text>
+                    <Text style={styles.headerCategory}> # {props.category || '테스트'} </Text>
+                    <Text style={styles.headerTitle}> {props.title || '테스트용 제목 에베베베베베'} </Text>
                 </View> 
 
                 {/* 쩜 세개 */}
@@ -95,8 +86,14 @@ export default function post(props) {
 
             
             {/* Body-Text부분 */}
-            <View style={[styles.bodyText, {marginTop : textMargin, marginBottom : textMargin}]}>
-                <Text>{props.content} </Text>
+            <View style={styles.body}>
+                <Text style={styles.bodyText}> 
+                    {props.content.length < 100 ? props.content.length : props.content.slice(0,100) + '...'} 
+                </Text>
+
+                <Text style={styles.bodyProfileName}> 
+                    {props.profileName} 
+                </Text>
             </View>
 
 
@@ -128,12 +125,38 @@ const styles = StyleSheet.create({
         alignItems: 'stretch',
         alignSelf: 'stretch',
     },
-    bodyText:{
-        marginLeft : 20,
+    headerCategory :{
+        marginTop : 10,
+        marginLeft : 10,
+        fontSize : 15,
+        color : '#FA8072',
     },
+    headerTitle :{
+        marginTop : 10,
+        fontSize : 20,
+        fontWeight : 'bold',
+        marginLeft : 10,
+    },
+
+
+
+    body:{
+        marginLeft : 20,
+        marginRight : 20,
+        color : '#949494'
+    },
+    bodyText:{
+        color : '#949494'
+    },
+    bodyProfileName :{
+        marginTop : 20,
+    },
+
     bottomContainer:{
         flexDirection: 'row',
         marginLeft : 20,
+        marginTop : 20,
+        marginBottom : 10,
     },
     bodyImageContainer:{
         flexDirection : 'row', 

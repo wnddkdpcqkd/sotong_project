@@ -45,7 +45,8 @@ export default function stack({navigation}){ //screen들간의 구조를 선언
         options ={
           {
             title : '글쓰기',
-            headerTitleAlign : 'center'
+            headerTitleAlign : 'center',
+            headerShown: false,
           }
         }
       />

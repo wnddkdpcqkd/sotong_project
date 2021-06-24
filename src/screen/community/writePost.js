@@ -1,7 +1,8 @@
 import React, {Component, useContext, useEffect, useState} from 'react'
-import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity, ScrollView } from 'react-native'
 import Divider from '../../components/common/divider';
 
+import EvilIconsIcon from "react-native-vector-icons/EvilIcons";
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import { GET_POST_CATEGORY, ADD_POST, GET_POSTS } from '../../connection/query';
 import { useQuery, useMutation } from '@apollo/client';
@@ -9,7 +10,8 @@ import { GlobalVar } from '../../GlobalVariables';
 
 export default function writePost({navigation}) {
 
-    const [postText, setPostText] = useState();         //텍스트 박스 텍스트값
+    const [postTitle, setPostTitle] = useState();       //게시글 제목
+    const [postText, setPostText] = useState();         //게시글 내용
     const [contentByte, setContentByte] = useState(0);  //텍스트 입력 byte
     
 
@@ -73,7 +75,7 @@ export default function writePost({navigation}) {
             add_post({variables : {
                 user_email : profile.email,
                 small_category : categoryState.findIndex((item) => item === 1) + 1,
-                title : '',
+                title : postTitle,
                 content : postText,
             }})
         })
@@ -87,19 +89,38 @@ export default function writePost({navigation}) {
     return (
 
         <View style={styles.container}>
-            <Divider color= '#dcdcdc' />
+            <Divider color= '#DADADA' height= {2} />
 
-            <View style={styles.marginContainer}>
-            
 
+                {/* 글쓰기 헤더 */}
+                <View style={styles.header}>
+
+                    <EvilIconsIcon
+                        name="chevron-left"
+                        style={styles.headerIcon}
+                        onPress = {() => navigation.goBack()}
+                    ></EvilIconsIcon>
+
+                    <Text style={{fontSize : 25}}> 글쓰기 </Text>
+
+                    <TouchableOpacity
+                        onPress = {() => {
+                             sendPost()
+                            alert('게시글 작성 완료.')
+                            navigation.goBack()
+                        }
+                    }>
+                        <Text style={styles.headerButton}>등록</Text>
+                    </TouchableOpacity>
+                </View>
+                <Divider color='#E2E2E2' height={2} />
 
 
                 {/* 카테고리 버튼 */}
-                <View style={styles.header}>
-                    
-                    <View style={{height : '40%' }}>
-                        <Text style={styles.textStyle}> 카테고리 </Text>
-                    </View>
+
+                <View style={styles.category}>
+                    <Text style={styles.textStyle}> 카테고리 </Text>
+
                     
                     <View style={styles.categoryContainer}>
                         {
@@ -119,19 +140,32 @@ export default function writePost({navigation}) {
                         }
                     </View>
                 </View>
-
+                
 
 
 
 
                 {/* 텍스트 입력란 */}
                 <View style={styles.textInputContainer} >
+                    
                     <View style={styles.textInputHeader} >
-                        <Text style={styles.textStyle}> 게시글 작성 </Text>
+                        <Text style={[styles.textStyle,{marginBottom : 10}]}> 게시글 작성 </Text>
                         <Text style={styles.textStyle}> {contentByte} / 1000</Text>
                     </View>
+                    <Divider color='#E2E2E2' height={1} />
+                    
+                    {/* 제목 입력란 */}
+                    <TextInput
+                        placeholder='제목을 입력하세요'
+                        style={styles.titleInput}
+                        onChangeText={(str) => { setPostTitle(str) } }
+                    />
+                    <Divider color='#E2E2E2' height={1} />
+
+                    {/* 내용 입력란 */}
+                    <ScrollView>
                     <TextInput 
-                        style={styles.textInput}
+                        style={styles.contentInput}
                         placeholder='내용을 작성해주세요'
                         multiline={true}
                         onChangeText={(str) => {
@@ -140,8 +174,9 @@ export default function writePost({navigation}) {
                             }
                         }
                     />
+                    </ScrollView>
                 </View>
-
+                <Divider color='#E2E2E2' height={1} />
 
 
 
@@ -164,7 +199,7 @@ export default function writePost({navigation}) {
 
 
 
-                {/* 게시글 제출버튼 */}
+                {/* 게시글 제출버튼
                 <View style={styles.submitContainer}>
                     <TouchableOpacity style={styles.touchableButton}
                         onPress = {() => {
@@ -176,27 +211,44 @@ export default function writePost({navigation}) {
                     >
                         <Text style={styles.buttonText}> 게시글 작성하기 </Text>
                     </TouchableOpacity>
-                </View>
+                </View> */}
 
-            </View>
+
         </View>
 
     )
 }
 
 const styles = StyleSheet.create({
+    header:{
+        width : '100%',
+        height : '10%', 
+        flexDirection : 'row',
+        justifyContent : 'space-between',
+        alignItems : 'center', 
+    },
+    headerIcon : {
+        fontSize : 50
+    },
+    headerButton :{
+        fontSize : 20,
+        color : '#FA8072',
+        marginRight : 15,
+    },
     container:{
         flex : 1,
-        alignItems : 'center',
         backgroundColor: 'white',
     },
     marginContainer :{
         marginTop : 10,
         width : '90%',
-        flex : 1,
         backgroundColor : 'white',
     },
-    header : {
+
+
+
+
+    category : {
         height : '15%',
     },
     headerText:{
@@ -207,7 +259,7 @@ const styles = StyleSheet.create({
     categoryContainer :{
         flex : 1,
         flexDirection : 'row',
-        height : '7%',
+        alignItems : 'center',
     },
     categoryBox : {
         flex : 1,
@@ -221,26 +273,39 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 		borderRadius: 15,
-		height : 30,
-		width : 60,
+		height : 35,
+		width : 70,
     },
+
+
+
+
+
+
+
+
+
     textInputContainer:{
-        flex : 3,
+        flex : 5,
         backgroundColor : 'white',
     },
-    textInputHeader : {
+    textInputHeader :{
         flexDirection : 'row',
         justifyContent : 'space-between'
     },
     textStyle : {
-        fontSize : 20,
+        fontSize : 17,
+        marginLeft : 15,
+        marginTop : 10,
+        marginRight : 15,
     },
-    textInput :{
-        marginTop : 20,
-        height : 200,
+    titleInput :{
+        marginLeft : 15,
+    },
+    contentInput : {
+        //height : 200,
         width : '100%',
-        borderRadius : 10,
-        borderWidth : 1,
+        marginLeft : 15,
     },
     imageUpload:{
         flex : 2,

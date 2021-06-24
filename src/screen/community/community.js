@@ -187,7 +187,9 @@ export default function community({navigation}) {
 								<TouchableOpacity onPress={()=> navigation.navigate('postDetail',item)}>
 									<Post
 										//postImage={item.image}
+										title={item.title}
 										content={item.content}
+										category={item.small_category}
 										type="communityList"
 										profileName={item.sotongUser.nick_name}
 										profileTime={item.create_date}
