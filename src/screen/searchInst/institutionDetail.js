@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from 'react-native'
 export default function institutionDetail() {
     return (
         <View>
-            <Text></Text>
+            <Text>bbbb</Text>
         </View>
     )
 }

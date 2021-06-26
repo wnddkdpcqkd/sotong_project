@@ -7,8 +7,8 @@ import EvilIconsIcon from "react-native-vector-icons/EvilIcons";
 
 //////////////////// 탑 탭에 들어갈것들 /////////////////////////
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import {institutionDetail} from './institutionDetail'
-import {institutionReview} from './institutionReview'
+import institutionDetail from './institutionDetail'
+import institutionReview from './institutionReview'
 ////////////////////////////////////////////////////////////////
 
 
@@ -81,7 +81,14 @@ export default function institutionInfo(props,{navigation}) {
 
 
                 {/*/////////////////////////  Top Tab navigator  ////////////////////////*/}
-                <Tab.navigator>
+                <Tab.navigator
+                    initialRouteName="상세정보"
+                    tabBarOptions={{
+                        activeTintColor: '#e91e63',
+                        labelStyle: { fontSize: 12 },
+                        style: { backgroundColor: 'powderblue' },
+                    }}
+                >
                     <Tab.Screen name="상세정보" component={institutionDetail} />
                     <Tab.Screen name="리뷰" component={institutionReview} />
                 </Tab.navigator>
