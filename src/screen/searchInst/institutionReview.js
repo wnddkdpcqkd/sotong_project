@@ -4,7 +4,20 @@ import { StyleSheet, Text, View } from 'react-native'
 export default function institutionReview() {
     return (
         <View>
-            <Text>aaaa</Text>
+            <Text style={{fontSize : 30}}>aaaa</Text>
+            <Text style={{fontSize : 30}}>aaaa</Text>
+            <Text style={{fontSize : 30}}>aaaa</Text>
+            <Text style={{fontSize : 30}}>aaaa</Text>
+            <Text style={{fontSize : 30}}>aaaa</Text>
+            <Text style={{fontSize : 30}}>aaaa</Text>
+            <Text style={{fontSize : 30}}>aaaa</Text>
+            <Text style={{fontSize : 30}}>aaaa</Text>
+            <Text style={{fontSize : 30}}>aaaa</Text>
+            <Text style={{fontSize : 30}}>aaaa</Text>
+            <Text style={{fontSize : 30}}>aaaa</Text>
+            <Text style={{fontSize : 30}}>aaaa</Text>
+            <Text style={{fontSize : 30}}>aaaa</Text>
+            <Text style={{fontSize : 30}}>aaaa</Text>
         </View>
     )
 }

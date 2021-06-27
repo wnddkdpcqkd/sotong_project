@@ -10,7 +10,7 @@ import mypage from '../screen/mypage/mypage';
 import Login from '../screen/mypage/login';
 import naverTest from '../screen/mypage/naverTest'
 import { GlobalVar } from '../GlobalVariables';
-import institutionInfo from '../screen/searchInst/institutionInfo'
+import institutionInfo from '../screen/searchInst/institutionInfo2'
 
 
 const Tab = createBottomTabNavigator(); // Tab의 구조 선언

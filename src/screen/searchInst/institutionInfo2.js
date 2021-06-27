@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'rea
 import { SliderBox } from 'react-native-image-slider-box';
 import EvilIconsIcon from "react-native-vector-icons/EvilIcons";
 import IonIcon from 'react-native-vector-icons/Ionicons';
+import Divider from '../../components/common/divider';
 
 
 //////////////////// 탑 탭에 들어갈것들 /////////////////////////
@@ -10,7 +11,6 @@ import {
     Button,
     Title,
     Paragraph,
-    Divider,
   } from 'react-native-paper';
   import {
     Tabs,
@@ -19,8 +19,8 @@ import {
     useTabNavigation,
   } from 'react-native-paper-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import InstitutionDetail from '../searchInst/institutionDetail'
-import InstitutionReview from '../searchInst/institutionReview'
+import InstitutionDetail from './institutionDetail'
+import InstitutionReview from './institutionReview'
 ////////////////////////////////////////////////////////////////
 
 
@@ -29,7 +29,7 @@ import InstitutionReview from '../searchInst/institutionReview'
 const Tab = createMaterialTopTabNavigator();
 
 export default function institutionInfo(props,{navigation}) {
-
+    const [pageState, setPageState] = React.useState('detail')
     const [imageTest, setImageTest] = React.useState([
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPRtd1DmFPUolhZd_-1mwxBMNQxxRaoHy7rlp4CZS_sl--wgBOh51inhB5QLQ_2vq8Pns&usqp=CAU",
         "http://health.chosun.com/site/data/img_dir/2020/03/31/2020033104515_0.jpg",
@@ -38,10 +38,10 @@ export default function institutionInfo(props,{navigation}) {
     const [imageIndex, setImageIndex] = React.useState(1)
     return (
         <View style={styles.container}>
-            <ScrollView style={{backgroundColor : 'yellow',}}>
+            <ScrollView >
     
                 {/* /////////////////////////병원 이미지 부분///////////////////////// */}
-                <View style={{backgroundColor : 'green'}}>
+                <View style={{height: 200, }}>
                     {/* 병원 이미지 슬라이더 */}
                     <SliderBox 
                         autoplay={true}
@@ -114,36 +114,97 @@ export default function institutionInfo(props,{navigation}) {
                     </View>
                     
                 </View>
-                <Divider color= '#DADADA' height= {2} />
+                <Divider color='#DADADA' height={1} />
                 {/*//////////////////////////////////////////////////////////////////////*/}
 
 
 
                 {/*/////////////////////////  Top Tab navigator  ////////////////////////*/}
-                <View style={{marginTop : 10, backgroundColor : 'blue'}}>
-                    <Tabs 
-                        // defaultIndex={0} // default = 0
-                        // uppercase={false} // true/false | default=true | labels are uppercase
-                        // showTextLabel={false} // true/false | default=false (KEEP PROVIDING LABEL WE USE IT AS KEY INTERNALLY + SCREEN READERS)
-                        // iconPosition // leading, top | default=leading
-                        style={{ backgroundColor:'#fff' }} // works the same as AppBar in react-native-paper
-                        // dark={false} // works the same as AppBar in react-native-paper
-                        // theme={} // works the same as AppBar in react-native-paper
-                        // mode="scrollable" // fixed, scrollable | default=fixed
-                        // onChangeIndex={(newIndex) => {}} // react on index change
-                        // showLeadingSpace={true} //  (default=true) show leading space in scrollable tabs inside the header
-                    >
-                        
-                        <TabScreen label="상세정보" >
-                            <View style={{height : 100,backgroundColor : 'green'}}>
-								<Text> aaaaaaaa </Text>
+                <View style={{height : 50 ,backgroundColor : 'white', flexDirection : 'row'}}>
+                    <View style={{flex : 1 ,alignItems : 'center', justifyContent : 'center'}}>
+                        <TouchableOpacity onPress={() => setPageState('detail')}>
+                            <Text>상세정보</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{flex : 1 ,alignItems : 'center', justifyContent : 'center'}}>
+                        <TouchableOpacity onPress={() => setPageState('review')}>
+                            <Text>리뷰</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <Divider color='#DADADA' height={1} />
+                {/*////////////////////////////////////////////////////////////////////////*/}
+                
+                
+                
+                {/*////////////////////////////  상세정보, 리뷰   //////////////////////////*/}
+                
+                {pageState === 'detail' ? 
+                ////////////////////////진료시간
+                <View>
+                    <View style={styles.detailContainer}>
+                        <View>
+                            <View style={styles.treatmentHourText}>
+                                <IonIcon name="alarm-outline" style={{fontSize : 25}}/>
+                                <Text style={{fontSize :20}}>  진료시간 </Text>
                             </View>
-                        </TabScreen>
-                        <TabScreen label="리뷰" >
-                            <InstitutionReview />
-                        </TabScreen>
-                    </Tabs>
-                </View> 
+                            <View style={{flexDirection : 'row'}}>
+                                <View style={{flex : 1,marginTop : 10, marginLeft : 40}}>
+                                    <Text style={{fontSize : 15}}>평일</Text>
+                                    <Text style={{fontSize : 15}}>09:00 ~ 18:00</Text>
+                                </View>
+                                <View style={{flex : 1, marginTop : 10, marginLeft : 0}}>
+                                    <Text style={{fontSize : 15}}>토</Text>
+                                    <Text style={{fontSize : 15}}>09:00 ~ 13:00</Text>
+                                </View>
+                            </View>
+                            <View style={{flexDirection : 'row'}}>
+                                <View style={{flex : 1,marginTop : 10, marginLeft : 40}}>
+                                    <Text style={{fontSize : 15}}>일,공휴일</Text>
+                                    <Text style={{fontSize : 15}}>휴진</Text>
+                                </View>
+                                <View style={{flex : 1, marginTop : 10, marginLeft : 0}}>
+                                    <Text style={{fontSize : 15}}>점심시간</Text>
+                                    <Text style={{fontSize : 15}}>13:00 ~ 14:00</Text>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+            
+                    <Divider color='#DADADA' height={2}/>
+                    {/* 진료 특이사항 */}
+                    <View style={styles.detailContainer}>
+                        <View >
+                            <View style={styles.treatmentHourText}>
+                                <IonIcon name="alert-circle-outline" style={{fontSize : 25}}/>
+                                <Text style={{fontSize :20}}>  진료특이사항 </Text>
+                            </View>
+                            <View style={{marginLeft : 40, marginTop : 10}}>
+                                <Text style={{fontSize : 15}}>평일 : 매주 수요일 오후 휴진</Text>
+                            </View>
+                        </View>
+                    </View>
+                    <Divider color='#DADADA' height={2}/>
+                    
+                    {/* 주소 */}
+                    <View style={styles.detailContainer}>
+                        <View >
+                            <View style={styles.treatmentHourText}>
+                                <IonIcon name="map-outline" style={{fontSize : 25}}/>
+                                <Text style={{fontSize :20}}>  주소 </Text>
+                            </View>
+                            <View style={{marginLeft : 40, marginTop : 10}}>
+                                <Text style={{fontSize : 15}}>서울특별시 서초구 어쩌구 저쩌구</Text>
+                                <Text style={{fontSize : 15}}>(빌딩이름, 몇층)</Text>
+                            </View>
+                        </View>
+                    </View>
+                    <Divider color='#DADADA' height={2}/>
+
+
+                </View>
+                : <Text>bbb</Text>}
+
             </ScrollView>
         </View>
     )
@@ -180,8 +241,7 @@ const styles = StyleSheet.create({
     ////////////////////////////////////////////
 
     headerBox :{
-        backgroundColor : 'green',
-        //flex : 1,
+        flex : 1,
         marginTop : 20,
         marginLeft : 20,
         marginRight : 20,
@@ -243,4 +303,15 @@ const styles = StyleSheet.create({
         marginTop : 5,
         marginBottom : 5,
     },
+
+    /////////////////////////////////////
+    /////////////////////////////////////
+    detailContainer:{
+        marginLeft : 20,
+        marginBottom : 20
+    },
+    treatmentHourText :{
+        marginTop : 20,
+        flexDirection : 'row',
+    }
 })
