@@ -104,13 +104,13 @@ export default function post(props) {
                 <TouchableOpacity  onPress={()=>console.log("좋아요 클릭")}>
                     <View style={{flexDirection : 'row'}}>
                         <FontAwesomeIcon name="heart-o" style={{fontSize: 15}} />
-                        <Text> 999+ </Text>
+                        <Text> {props.likeCount} </Text>
                     </View>
                 </TouchableOpacity>
                 
                 {/* 댓글 수*/}
                 <FontAwesomeIcon name="comments" style={{fontSize: 15, marginLeft : 10}} />
-                <Text> 999+ </Text>
+                <Text> {props.replyCount} </Text>
             </View>
 
         </ScrollView>

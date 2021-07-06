@@ -34,8 +34,10 @@ query {
 		content
 		create_date
 		sotongUser{
-		nick_name
+			nick_name
 		}
+		replyCount
+		likeCount
   	}
 }`;
 

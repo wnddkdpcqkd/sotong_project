@@ -191,8 +191,10 @@ export default function community({navigation}) {
 										content={item.content}
 										category={item.small_category}
 										type="communityList"
-										profileName={item.sotongUser.nick_name}
+										//profileName={item.sotongUser.nick_name}
 										profileTime={item.create_date}
+										replyCount ={item.replyCount}
+										likeCount ={item.likeCount}
 										/>
 								</TouchableOpacity>
 								<Divider color = '#f7f6f2' height = {5} />
