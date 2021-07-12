@@ -13,6 +13,13 @@
     </application>
     <!-- naverMap 사용 시 추가 -->
 
+    <!-- 이미지 picker 사용 시 추가 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- 이미지 picker 사용 시 추가 -->
+
+
     
     <application
       android:name=".MainApplication"

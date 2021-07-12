@@ -1,5 +1,5 @@
 import React, {Component, useContext, useEffect, useState} from 'react'
-import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Button, TextInput, TouchableOpacity, ScrollView, Image } from 'react-native'
 import Divider from '../../components/common/divider';
 
 import EvilIconsIcon from "react-native-vector-icons/EvilIcons";
@@ -94,17 +94,22 @@ export default function writePost({navigation}) {
         let imageList = [] ;
 
         ImagePicker.openPicker({
+            mediaType : 'photo',
             multiple : true,
-            waitAnimationEnd : false,
-            includeExif : true,
-            forceJpg : true,
-            compressImageQuality : 0.8,
-            maxFiles : 5,
-            //mediaType : "photo",
             includeBase64 : true,
+            forceJpg : true,
         }).then(response => {
             console.log('response ' ,response);
-        })
+            response.map((image) => {
+                imageList.push({
+                    uri : image.path,
+                    width : image.width,
+                    height : image.height,
+                    mime : image.mime
+                })
+            })
+            setImages(imageList);
+        }).catch(e => console.log('Error ', e.message))        
     }
 
     ///////////////////// 이미지 선택 ///////////////////////////////
@@ -210,17 +215,33 @@ export default function writePost({navigation}) {
                 <View style={styles.imageUpload}>
                     <View style={styles.textInputHeader} >
                         <Text style={styles.textStyle}> 사진첨부 (최대 10장)</Text>
-                        <Text style={styles.textStyle}> 0 / 10 </Text>
+                        <Text style={styles.textStyle}> {images.length} / 5 </Text>
+                        {console.log(images)}
                     </View>
 
                     <View style = {{marginLeft : 20, marginTop : 20, width : '25%', borderRadius : 15, borderWidth : 1}}> 
                         <EvilIconsIcon
                             name="camera"
                             style={{fontSize : 100}}
-                            onPress= {() => {openImagePicker()}
-                            }
+                            onPress= { () => openImagePicker() }
                         />
                     </View>
+                    
+                    {images ? images.map((item) => {
+                        <ScrollView>
+                        <View key={item.uri}>
+                            <Image
+                                style= {{width : 300, height : 300, resizeMode : 'contain'}}
+                                source={item.uri} 
+                            />
+                        </View>
+                        </ScrollView>
+                        console.log(images);
+                        console.log("개수");
+
+                    }) : null }
+                    
+                    
                 </View>
 
 
