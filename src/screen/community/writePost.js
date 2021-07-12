@@ -8,11 +8,18 @@ import { GET_POST_CATEGORY, ADD_POST, GET_POSTS } from '../../connection/query';
 import { useQuery, useMutation } from '@apollo/client';
 import { GlobalVar } from '../../GlobalVariables';
 
+// 이미지 업로드 //
+import ImagePicker from 'react-native-image-crop-picker';
+
+
+
+
 export default function writePost({navigation}) {
 
     const [postTitle, setPostTitle] = useState();       //게시글 제목
     const [postText, setPostText] = useState();         //게시글 내용
     const [contentByte, setContentByte] = useState(0);  //텍스트 입력 byte
+    const [images, setImages]  = useState ([])          //사진 첨부
     
 
     const calculateByte= (str) =>{
@@ -82,8 +89,25 @@ export default function writePost({navigation}) {
     }
     ///////////////////// 게시글 쓰기 ///////////////////////////////
 
+    ///////////////////// 이미지 선택 ///////////////////////////////
+    const openImagePicker = () => {
+        let imageList = [] ;
 
+        ImagePicker.openPicker({
+            multiple : true,
+            waitAnimationEnd : false,
+            includeExif : true,
+            forceJpg : true,
+            compressImageQuality : 0.8,
+            maxFiles : 5,
+            //mediaType : "photo",
+            includeBase64 : true,
+        }).then(response => {
+            console.log('response ' ,response);
+        })
+    }
 
+    ///////////////////// 이미지 선택 ///////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////////////////// 
     return (
@@ -189,8 +213,13 @@ export default function writePost({navigation}) {
                         <Text style={styles.textStyle}> 0 / 10 </Text>
                     </View>
 
-                    <View style = {{heigth : 50, width : 50, backgroundColor : 'gray' , borderRadius : 15,}}> 
-                        <Text>이미지업로드 이미지</Text>
+                    <View style = {{marginLeft : 20, marginTop : 20, width : '25%', borderRadius : 15, borderWidth : 1}}> 
+                        <EvilIconsIcon
+                            name="camera"
+                            style={{fontSize : 100}}
+                            onPress= {() => {openImagePicker()}
+                            }
+                        />
                     </View>
                 </View>
 

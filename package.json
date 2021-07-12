@@ -27,6 +27,7 @@
     "react-native-action-button": "git://github.com/henasys/react-native-action-button.git#b48e5e0d0cbec228ae319fb34b56abcd96fdd214",
     "react-native-geolocation-service": "^5.3.0-beta.1",
     "react-native-gesture-handler": "^1.10.3",
+    "react-native-image-crop-picker": "^0.36.2",
     "react-native-image-slider-box": "^1.0.12",
     "react-native-maps": "^0.28.0",
     "react-native-nmap": "0.0.62",
