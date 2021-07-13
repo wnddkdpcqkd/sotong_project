@@ -75,7 +75,9 @@ export default function writePost({navigation}) {
     const [ add_post ] = useMutation(ADD_POST,
         {
             refetchQueries : [ { query : GET_POSTS }]
-        })
+        }
+    )
+
     function sendPost() {
         AsyncStorage.getItem('profile', (err,result) =>{
             const profile = JSON.parse(result)
@@ -84,7 +86,7 @@ export default function writePost({navigation}) {
                 small_category : categoryState.findIndex((item) => item === 1) + 1,
                 title : postTitle,
                 content : postText,
-            }})
+            }}).catch(e => console.log('Error : ',e.message))
         })
     }
     ///////////////////// 게시글 쓰기 ///////////////////////////////
@@ -146,7 +148,7 @@ export default function writePost({navigation}) {
             <Divider color= '#DADADA' height= {2} />
 
 
-                {/* 글쓰기 헤더 */}
+                {/********************************글쓰기 헤더 *********************************/}
                 <View style={styles.header}>
 
                     <EvilIconsIcon
@@ -159,7 +161,7 @@ export default function writePost({navigation}) {
 
                     <TouchableOpacity
                         onPress = {() => {
-                             sendPost()
+                            sendPost()
                             alert('게시글 작성 완료.')
                             navigation.goBack()
                         }
@@ -170,7 +172,7 @@ export default function writePost({navigation}) {
                 <Divider color='#E2E2E2' height={2} />
 
 
-                {/* 카테고리 버튼 */}
+                {/********************************* 카테고리 탭 *********************************/}
 
                 <View style={styles.category}>
                     <Text style={styles.textStyle}> 카테고리 </Text>
@@ -199,7 +201,7 @@ export default function writePost({navigation}) {
 
 
 
-                {/* 텍스트 입력란 */}
+                {/********************************* 게시글 작성탭 *********************************/}
                 <View style={styles.textInputContainer} >
                     
                     <View style={styles.textInputHeader} >
@@ -208,7 +210,7 @@ export default function writePost({navigation}) {
                     </View>
                     <Divider color='#E2E2E2' height={1} />
                     
-                    {/* 제목 입력란 */}
+                    {/********************************* 제목 입력란 *********************************/}
                     <TextInput
                         placeholder='제목을 입력하세요'
                         style={styles.titleInput}
@@ -216,7 +218,7 @@ export default function writePost({navigation}) {
                     />
                     <Divider color='#E2E2E2' height={1} />
 
-                    {/* 내용 입력란 */}
+                    {/********************************* 내용 입력란 *********************************/}
                     <ScrollView>
                     <TextInput 
                         style={styles.contentInput}
@@ -236,7 +238,7 @@ export default function writePost({navigation}) {
 
 
 
-                {/* 이미지 업로드 */}
+                {/********************************* 사진 첨부 *********************************/}
                 <View style={styles.imageUploadContainer}>
                     <View style={styles.textInputHeader} >
                         <Text style={styles.textStyle}> 사진첨부 (최대 5장)</Text>
@@ -275,27 +277,6 @@ export default function writePost({navigation}) {
                         
                     </View>
                 </View>
-
-
-
-
-
-
-                {/* 게시글 제출버튼
-                <View style={styles.submitContainer}>
-                    <TouchableOpacity style={styles.touchableButton}
-                        onPress = {() => {
-                                sendPost()
-                                alert('게시글 작성 완료.')
-                                navigation.goBack()
-                            }
-                        }
-                    >
-                        <Text style={styles.buttonText}> 게시글 작성하기 </Text>
-                    </TouchableOpacity>
-                </View> */}
-
-
         </View>
 
     )
