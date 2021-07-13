@@ -98,10 +98,10 @@ export default function writePost({navigation}) {
             multiple : true,
             includeBase64 : true,
             forceJpg : true,
-        }).then(response => {
-            console.log('response ' ,response);
+        }).then((response) => {
             response.map((image) => {
                 imageList.push({
+                    data : image.data,
                     uri : image.path,
                     width : image.width,
                     height : image.height,
@@ -113,6 +113,31 @@ export default function writePost({navigation}) {
     }
 
     ///////////////////// 이미지 선택 ///////////////////////////////
+
+
+    ///////////////////// 이미지 화면에 뿌리기 //////////////////
+    const showImages= () =>{
+        console.log(images.length);
+        if(images.length > 5){
+            alert('이미지는 5개까지 첨부 가능합니다')
+            setImages([]);
+            console.log('왜 일로들어오지?')
+        }
+        else if(images.length > 0){
+            images.map((image,id) =>{
+                return(
+                    <Image
+                        style= {styles.imageStyle}
+                        source={image}
+                    />
+                )
+                console.log("이미지")
+            })
+        }
+    }
+    ///////////////////// 이미지 화면에 뿌리기 //////////////////
+
+
 
     ////////////////////////////////////////////////////////////////////////////////////// 
     return (
@@ -212,36 +237,43 @@ export default function writePost({navigation}) {
 
 
                 {/* 이미지 업로드 */}
-                <View style={styles.imageUpload}>
+                <View style={styles.imageUploadContainer}>
                     <View style={styles.textInputHeader} >
-                        <Text style={styles.textStyle}> 사진첨부 (최대 10장)</Text>
+                        <Text style={styles.textStyle}> 사진첨부 (최대 5장)</Text>
                         <Text style={styles.textStyle}> {images.length} / 5 </Text>
-                        {console.log(images)}
                     </View>
 
-                    <View style = {{marginLeft : 20, marginTop : 20, width : '25%', borderRadius : 15, borderWidth : 1}}> 
-                        <EvilIconsIcon
-                            name="camera"
-                            style={{fontSize : 100}}
-                            onPress= { () => openImagePicker() }
-                        />
-                    </View>
-                    
-                    {images ? images.map((item) => {
-                        <ScrollView>
-                        <View key={item.uri}>
-                            <Image
-                                style= {{width : 300, height : 300, resizeMode : 'contain'}}
-                                source={item.uri} 
+                    <View style = {styles.imageUploadSubContainer}>
+                        <View style={styles.cameraIconContainer}> 
+                            <EvilIconsIcon
+                                name="camera"
+                                style={{fontSize : 55}}
+                                onPress= { () => openImagePicker() }
                             />
                         </View>
-                        </ScrollView>
-                        console.log(images);
-                        console.log("개수");
-
-                    }) : null }
-                    
-                    
+                        <View style={styles.imageContainer}>
+                            {/* image 0 개일 때 null, 5개 이하일 때만 image 첨부 가능 */}
+                            {images ?
+                                images.length <= 5 ? 
+                                (
+                                    images.map((image,id) => {
+                                        return(
+                                            <Image
+                                                    style= {styles.imageStyle}
+                                                    source={image}
+                                            />
+                                        )
+                                    }) 
+                                )
+                                : (
+                                    alert("이미지는 5개까지 첨부 가능합니다."),
+                                    setImages([])
+                                )
+                            : null }
+                        </View>
+                        
+                        
+                    </View>
                 </View>
 
 
@@ -270,6 +302,7 @@ export default function writePost({navigation}) {
 }
 
 const styles = StyleSheet.create({
+
     header:{
         width : '100%',
         height : '10%', 
@@ -357,9 +390,7 @@ const styles = StyleSheet.create({
         width : '100%',
         marginLeft : 15,
     },
-    imageUpload:{
-        flex : 2,
-    },
+
     submitContainer:{
         flex : 1,
         alignItems : 'center',
@@ -384,5 +415,39 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color : 'white',
-    }
+    },
+
+
+
+
+    /////////////// 사진첨부
+
+    imageUploadContainer:{
+        flex : 2,
+    },
+    imageUploadSubContainer: {
+        flex : 1 ,
+        flexDirection : 'row',
+        marginLeft : 15,
+        marginTop : 20,
+        marginRight : 20,
+    },
+    cameraIconContainer: {
+        flex : 1 ,
+        alignItems : 'center',
+        justifyContent:'center', 
+        marginRight : 5, 
+        borderRadius : 15, 
+        borderWidth : 1, 
+        height : '50%' 
+    },
+    imageContainer: {
+        flex : 5, 
+        flexDirection : 'row'
+    },
+    imageStyle : {
+        width : '20%',
+        height: '50%',
+    },
+
 })
