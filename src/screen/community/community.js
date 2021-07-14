@@ -15,8 +15,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function community({navigation}) {
 
 	const {loginCheck, setLoginCheck} = React.useContext(GlobalVar)
-    /////////////////////////////게시물 받아오기/////////////////////////////////////////////////////////////////////////
-    const [postContainer, setPostContainer] = useState([]);			//전체 게시물 담아두는곳
+    /////////////////////////////게시물 받아오기///////////////////////////////////
+    
+	const [postContainer, setPostContainer] = useState([]);			//전체 게시물 담아두는곳
 	const [post, setPost] = useState([]) 							//실제 보여줄 게시물 배열 (smallCategory로 filtering) 
 	const [category, setCategory] = useState([]);					//카테고리 ( 1: 질문, 2: 고민, 3: 리뷰, 4: 정보)
 

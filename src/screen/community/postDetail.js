@@ -18,25 +18,41 @@ function postDetail({route,navigation}) {
     
 
     ///////////////////////////////////// 댓글 받아오기 //////////////////////////////////////////
-    //  reply : 댓글
+    /*
+        reply : 받아온 댓글목록 저장
+    */
     const {loading, error, data : postData, } = useQuery(GET_POST_REPLY, { variables : { post_id : route.params.id }});
-    // const [get_post_reply, { loading, error, data : postData, refetch}] = useLazyQuery(GET_POST_REPLY, 
-    //     { 
-    //         variables : { post_id : route.params.id },
-    //     }
-    // );
 
     const [reply, setReply] = useState([]);
 	//console.log('[postDetail] data : ',data)
     useEffect(() => {
 		if (postData && postData.postReply) 
             setReply(postData.postReply);
-		console.log(postData);
+		// console.log('[postDetails] postData : ', postData);
+
 	},[postData])
     ///////////////////////////////////// 댓글 받아오기 //////////////////////////////////////////
 
-    ///////////////////////////////////// 댓글 밀어넣기 //////////////////////////////////////////
-    // 
+    ///////////////////////////////////// 댓글 추가하기 //////////////////////////////////////////
+    /*  
+        reReplyInfo : 대댓글 작성 시, 대댓글 달 댓글의 {ID, 작성자 nickName}
+        text : 댓글창에 입력한 텍스트 내용
+        loginCheck : 로그인 됐는지 확인 (로그인 안되면 댓글 입력 불가)
+        add_reply : 댓글 입력
+    */
+
+    const [ reReplyInfo, setReReplyInfo ] = useState({
+        replyId : '',
+        replyWriterNickName : ''
+    })
+    const getReplyInfo = (replyId,nickName) => {
+        setReReplyInfo({
+            replyId : replyId,
+            replyWriterNickName : nickName,
+        })
+        console.log('[postDetails] reReplyInfo : ', replyId, nickName)
+    }
+
     const [ text, setText ] = useState();
 
     const { loginCheck, setLoginCheck } = React.useContext(GlobalVar)
@@ -46,12 +62,9 @@ function postDetail({route,navigation}) {
             	variables : { post_id : route.params.id }
 			}]
 		}
-    ) 
+    )
 
-	
-	
-    
-	function add_reply() {
+    function add_reply() {
         if (loginCheck){
             AsyncStorage.getItem('profile',(err,result) => {
                 const profile = JSON.parse(result)
@@ -59,7 +72,7 @@ function postDetail({route,navigation}) {
                     post_id : route.params.id,
                     writer_email : profile.email,
                     content : text
-                }})
+                }}).catch( e => e.message)
 				alert('댓글이 입력되었습니다')
 				setText('')
             })            
@@ -68,6 +81,11 @@ function postDetail({route,navigation}) {
             alert("로그인이 필요합니다.")
         }
     }
+    ///////////////////////////////////// 댓글 추가하기 //////////////////////////////////////////
+	
+	
+    
+
 
 
 
@@ -82,7 +100,7 @@ function postDetail({route,navigation}) {
                 content={route.params.content}
                 profileName={route.params.profileName}
                 profileTime={route.params.profileTime}
-            />
+            />          
             <Divider color='#D4D4D4' height={2}/>
                 
 
@@ -91,27 +109,32 @@ function postDetail({route,navigation}) {
             {/* 댓글 */}
             <View>
                 {   
-					reply.length > 0 ?	reply.map((item) => {
+					reply.length > 0 
+                    
+                    //댓글 있을 때
+                    ?	reply.map((item) => {
+                        
                         return (
                             <Reply
                                 key={item.id}
                                 profileName={item.sotongUser.nick_name}
                                 replyTime={item.create_date}
                                 replyContent={item.content}
+                                replyId={item.id}
+                                replyReply={item.postReplys}
+                                getReplyInfo={getReplyInfo}
+                                backgroundColor={item.id === reReplyInfo.replyId ? '#ffe2ed' : 'white'}
                             />
                         )
-                    }) : 
-
-                    //댓글이 없을 때
-                    (
+                    }) 
+                    
+                    // 댓글 없을 때
+                    :(
                         <View style={styles.noReplyContainer}>
                             <Text style={styles.noReplyText}>등록된 댓글이 없습니다.</Text>
                             <Text style={styles.noReplyText}>첫 댓글을 남겨주세요</Text>
                         </View>    
                     )
-
-                    
-
 				}
             </View>
             
@@ -133,7 +156,7 @@ function postDetail({route,navigation}) {
                 <TextInput
                     multiline={true}
                     style={styles.input}
-                    placeholder="댓글 쓰기"
+                    placeholder= {reReplyInfo.replyId === '' ? "댓글을 입력하세요" : reReplyInfo.replyWriterNickName + '님께 댓글 작성'}
                     onChangeText = {(text) => {setText(text)}}
 					value = {text}
                 />

@@ -51,6 +51,15 @@ export const GET_POST_REPLY = gql`
 			sotongUser{
 			  nick_name
 			}
+			postReplys{
+				id
+				content
+				writer_email
+				create_date
+				sotongUser{
+						nick_name
+				}
+			}
 	 	}
   	}`;
 
