@@ -18,20 +18,17 @@ function postDetail({route,navigation}) {
     
 
     ///////////////////////////////////// 댓글 받아오기 //////////////////////////////////////////
-    /*
-        reply : 받아온 댓글목록 저장
-    */
-    const {loading, error, data : postData, } = useQuery(GET_POST_REPLY, { variables : { post_id : route.params.id }});
-
+    // reply : 받아온 댓글 목록
     const [reply, setReply] = useState([]);
-	//console.log('[postDetail] data : ',data)
+    const {loading, error, data : postData, } = useQuery(GET_POST_REPLY, { variables : { post_id : route.params.id }});
     useEffect(() => {
 		if (postData && postData.postReply) 
             setReply(postData.postReply);
-		// console.log('[postDetails] postData : ', postData);
 
 	},[postData])
     ///////////////////////////////////// 댓글 받아오기 //////////////////////////////////////////
+
+
 
     ///////////////////////////////////// 댓글 추가하기 //////////////////////////////////////////
     /*  
@@ -50,7 +47,7 @@ function postDetail({route,navigation}) {
             replyId : replyId,
             replyWriterNickName : nickName,
         })
-        console.log('[postDetails] reReplyInfo : ', replyId, nickName)
+        console.log('[postDetails] reReplyInfo : ', reReplyInfo.replyId==='' ? replyId : '에베베베ㅔ베')
     }
 
     const [ text, setText ] = useState();
@@ -66,6 +63,7 @@ function postDetail({route,navigation}) {
 
     function add_reply() {
         if (loginCheck){
+            
             AsyncStorage.getItem('profile',(err,result) => {
                 const profile = JSON.parse(result)
                 add_post_reply({variables : {
