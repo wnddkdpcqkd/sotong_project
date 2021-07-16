@@ -9,7 +9,7 @@ import { GlobalVar } from '../../GlobalVariables';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import {useQuery, useMutation, NetworkStatus, useLazyQuery} from '@apollo/react-hooks';
 import { GET_POST_REPLY, ADD_POST_REPLY } from '../../connection/query';
-
+import { getPostReply, addReply , addReReply, addReplyMutation } from '../../connection/gqlAPI';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -17,18 +17,13 @@ const windowHeight = Dimensions.get('window').height;
 function postDetail({route,navigation}) {
     
 
-    ///////////////////////////////////// 댓글 받아오기 //////////////////////////////////////////
+
     // reply : 받아온 댓글 목록
     const [reply, setReply] = useState([]);
-    const {loading, error, data : postData, } = useQuery(GET_POST_REPLY, { variables : { post_id : route.params.id }});
-    useEffect(() => {
-		if (postData && postData.postReply) 
-            setReply(postData.postReply);
-
-	},[postData])
-    ///////////////////////////////////// 댓글 받아오기 //////////////////////////////////////////
-
-
+    
+    getPostReply(route.params.id).then((item) => {
+        setReply(item.postReply)
+    })
 
     ///////////////////////////////////// 댓글 추가하기 //////////////////////////////////////////
     /*  
@@ -66,10 +61,19 @@ function postDetail({route,navigation}) {
             
             AsyncStorage.getItem('profile',(err,result) => {
                 const profile = JSON.parse(result)
+                let postId = null;
+                
+                if (reReplyInfo.replyId === ''){
+                    postId = route.params.id
+                    reReplyInfo.replyId = null
+                    console.log("replyId : " ,  reReplyInfo.replyId)
+                }
+
                 add_post_reply({variables : {
-                    post_id : route.params.id,
+                    post_id : postId,
                     writer_email : profile.email,
-                    content : text
+                    content : text,
+                    reply_post_id : reReplyInfo.replyId
                 }}).catch( e => e.message)
 				alert('댓글이 입력되었습니다')
 				setText('')
@@ -77,6 +81,16 @@ function postDetail({route,navigation}) {
         }
         else {
             alert("로그인이 필요합니다.")
+        }
+    }
+
+    function add_reply1(){
+        console.log("add_reply1")
+        if (loginCheck){
+            AsyncStorage.getItem('profile',(err,result) => {
+                const profile = JSON.parse(result)
+                addReplyMutation({ post_id : route.params.id , writerEmail : profile.email , content : text}).then((item) => console.log(item));
+            })
         }
     }
     ///////////////////////////////////// 댓글 추가하기 //////////////////////////////////////////
@@ -107,7 +121,7 @@ function postDetail({route,navigation}) {
             {/* 댓글 */}
             <View>
                 {   
-					reply.length > 0 
+					reply && reply.length > 0
                     
                     //댓글 있을 때
                     ?	reply.map((item) => {
@@ -159,7 +173,7 @@ function postDetail({route,navigation}) {
 					value = {text}
                 />
                 <TouchableOpacity style={styles.submit}
-					onPress={() => { add_reply() }}
+					onPress={() => { add_reply1() }}
                 >
                     <Text style={styles.text}> 게시 </Text>
                 </TouchableOpacity>

@@ -72,8 +72,8 @@ query{
 }`; 
 
 export const ADD_POST_REPLY = gql `
-mutation savePostReply( $id : Float, $post_id : Float , $writer_email : String , $content : String){
-	savePostReply(id : $id, post_id : $post_id, writer_email : $writer_email, content : $content)
+mutation savePostReply( $post_id : Float , $writer_email : String , $content : String, $reply_post_id : Float){
+	savePostReply(post_id : $post_id, writer_email : $writer_email, content : $content, reply_post_id : $reply_post_id)
 }`;
 
 export const ADD_POST = gql`

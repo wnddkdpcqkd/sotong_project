@@ -8,6 +8,9 @@ import { GET_POST_CATEGORY, ADD_POST, GET_POSTS } from '../../connection/query';
 import { useQuery, useMutation } from '@apollo/client';
 import { GlobalVar } from '../../GlobalVariables';
 
+
+import { getPost1, getSmallCategory } from '../../connection/gqlAPI';
+
 // 이미지 업로드 //
 import ImagePicker from 'react-native-image-crop-picker';
 
@@ -22,6 +25,7 @@ export default function writePost({navigation}) {
     const [images, setImages]  = useState ([])          //사진 첨부
     
 
+    // Text Byte 수 표시
     const calculateByte= (str) =>{
         setContentByte(
             str
@@ -33,31 +37,15 @@ export default function writePost({navigation}) {
 
     
 
-    ///////////////////// 게시물 카테고리 종류 ///////////////////////////
+    // 게시물 카테고리 종류 
     const [postCategory, setPostCategory] = useState([])
-    const { loading, error , data } = useQuery(GET_POST_CATEGORY)
-    useEffect(() => {
+    getSmallCategory().then((data) =>{
         if(data && data.postCategorys){
-            setPostCategory(data.postCategorys)
+            setPostCategory(data.postCategorys);
         }
-    },[data])
-    // console.log('[writePost] data.postCategorys : ',data.postCategorys)
-    // console.log('[writePost] postCategory: ',postCategory)
-    //게시물 카테고리를 화면에 뿌려줌
-    const showButton=(categoryArray) => {
-        return (
-            categoryArray.map((categoryName,key) => {
-                return <Button key={key} title={categoryName} />
-            })
-        )   
-    }
-    ////////////////////////////////////////////////////////////
+    })
 
-
-
-
-
-    ////////////////////  게시물 카테고리 선택 ///////////////////////
+    //  게시물 카테고리 선택 이벤트
     const [categoryState, setCategoryState] = useState([0,0,0,0]);
     function setCategoryArr(num) {
         let newArr = [0,0,0,0]
@@ -66,7 +54,7 @@ export default function writePost({navigation}) {
         setCategoryState(newArr);
     }
 
-    ////////////////////////////////////////////////////////////
+
 
 
 
@@ -183,13 +171,13 @@ export default function writePost({navigation}) {
                             postCategory ? postCategory.map((item) =>{
                                 return (
                                     <View key={item.id} style ={styles.categoryBox}>
-                                    <TouchableOpacity
-                                        key = {item.id}
-                                        style={styles.categoryButton}
-                                        onPress={() => setCategoryArr( item.id -1 )}
-                                    >
-                                        <Text style={styles.smallCategoryText}> {item.content} </Text>
-                                    </TouchableOpacity>
+                                        <TouchableOpacity
+                                            key = {item.id}
+                                            style={styles.categoryButton}
+                                            onPress={() => setCategoryArr( item.id -1 )}
+                                        >
+                                            <Text style={styles.smallCategoryText}> {item.content} </Text>
+                                        </TouchableOpacity>
                                     </View>
                                 )
                             }) : ''

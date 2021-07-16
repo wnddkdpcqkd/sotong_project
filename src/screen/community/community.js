@@ -9,42 +9,35 @@ import { GlobalVar } from '../../GlobalVariables';
 import { useQuery } from '@apollo/react-hooks';
 import { useFocusEffect, useIsFocused  } from '@react-navigation/native';
 import { GET_POSTS, GET_POST_CATEGORY } from '../../connection/query';
+import { getPost, getSmallCategory } from '../../connection/gqlAPI';
+
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
 
 export default function community({navigation}) {
+	
+
 
 	const {loginCheck, setLoginCheck} = React.useContext(GlobalVar)
-    /////////////////////////////게시물 받아오기///////////////////////////////////
-    
 	const [postContainer, setPostContainer] = useState([]);			//전체 게시물 담아두는곳
 	const [post, setPost] = useState([]) 							//실제 보여줄 게시물 배열 (smallCategory로 filtering) 
 	const [category, setCategory] = useState([]);					//카테고리 ( 1: 질문, 2: 고민, 3: 리뷰, 4: 정보)
-
-
-	const queryMultiple = () => {
-		const res1 = useQuery(GET_POSTS);
-		const res2 = useQuery(GET_POST_CATEGORY);
-		return [res1, res2];
-	}
-
-	const [
-		  { loading: loading1, data: getPost, refetch : refetchPosts },
-		  { loading: loading2, data: getCategory }
-	] = queryMultiple()
-
-
-	useEffect(() => {
-		if (getPost && getPost.posts) {
-			let pstarr = getPost.posts.reverse()
-			setPostContainer(pstarr)
-			setPost(pstarr)
+	
+	
+	getPost().then((data) => {
+		if(data && data.posts){
+			setPostContainer(data.posts.reverse())
+			setPost(data.posts)
 		}
-		if (getCategory && getCategory.postCategorys){
-			setCategory(getCategory.postCategorys);
+	});
+
+	getSmallCategory("community").then((data) => {
+		if(data && data.postCategorys){
+			setCategory(data.postCategorys);
 		}
-	},[getPost,getCategory])
-	/////////////////////////////게시물 받아오기/////////////////////////
+		console.log("[community] : postCategorys", data.postCategorys)
+	});
+
 
 	///////////////////////////// bigCategory BOX  //////////////////////////
 	// [전체, 컨텐츠, 공지사항]
@@ -140,7 +133,7 @@ export default function community({navigation}) {
 
 			{/* SMALL 카테고리 버튼 (전체, 고민, 리뷰, 질문, 병원 ...) */}
 			<View style={styles.smallCategory}>
-				<View style={styles. smallCategoryBox}>
+				{/* <View style={styles. smallCategoryBox}>
 					
 					<TouchableOpacity
 						style={[{backgroundColor : smallCategoryArr[0] ? '#FFBCBC' : '#ffffff'},styles.smallCategoryButton]}
@@ -148,7 +141,7 @@ export default function community({navigation}) {
 					>
 						<Text style={styles.smallCategoryText}> 전체 </Text>
 					</TouchableOpacity>
-				</View>
+				</View> */}
 				{
 					category ? category.map((item) => {
 						return(
