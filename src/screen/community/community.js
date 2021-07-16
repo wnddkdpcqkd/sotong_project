@@ -16,7 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function community({navigation}) {
 	
-
+	
 
 	const {loginCheck, setLoginCheck} = React.useContext(GlobalVar)
 	const [postContainer, setPostContainer] = useState([]);			//전체 게시물 담아두는곳
@@ -90,7 +90,20 @@ export default function community({navigation}) {
 
 			{/* 헤더 */}
 			<View style={styles.headerContainer}>
-				<Text style={styles.headerText}>커뮤니티</Text>
+				<View style={{flex : 1, width : '90%', flexDirection : 'row', justifyContent : 'space-between'}}>
+					<View style={{justifyContent : 'center'}}> 
+						<Text style={styles.headerText}>커뮤니티</Text>
+					</View>
+					<View style={{justifyContent: 'center', flexDirection : 'row', justifyContent : 'flex-end' , alignItems : 'center'}}> 
+						<TouchableOpacity style={{ borderRadius : 100, marginRight : 20,}}>
+							<FontAwesomeIcon name="refresh" style={{ borderRadius : 100, fontSize: 25 }} />
+						</TouchableOpacity>
+						<TouchableOpacity style={{ borderRadius : 100,}}>
+							<FontAwesomeIcon name="search" style={{ fontSize: 25 }} />
+						</TouchableOpacity>
+					</View>
+				</View>
+				
 			</View>
 			<Divider color = '#e3e1dc' />
 
@@ -225,7 +238,7 @@ export default function community({navigation}) {
 
 const styles = StyleSheet.create({
 	headerContainer:{
-		height : '10%',
+		height : '8%',
 		alignItems : 'center',
 		justifyContent : 'center'
 	},
@@ -233,7 +246,7 @@ const styles = StyleSheet.create({
 		fontSize : 25
 	},
 	bigCategory :{
-		height : '10%',
+		height : '8%',
 		flexDirection : 'row',
 		alignItems : 'center'
 	},

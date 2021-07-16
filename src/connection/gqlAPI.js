@@ -1,6 +1,6 @@
 import { gql } from "apollo-boost";
 import client from './client';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery, useMutation, throwServerError } from '@apollo/react-hooks';
 import * as query from './query'
 
 export async function getPost() {
@@ -12,6 +12,7 @@ export async function getPost() {
 
 // page=(community) : smallCategory에 {전체} 추가
 export async function getSmallCategory(page) {
+    console.log("[gqlApi] getSmallCategory : ")
     const { loading , error , data } = useQuery(query.GET_POST_CATEGORY)
     if(loading) return loading
     if(page === "community") {
@@ -38,35 +39,39 @@ export async function getPostReply(id) {
 // id           : 댓글 추가할 게시물의 id
 // writerEmail  : 작성자 이메일
 // replyText    : 댓글 내용
-export async function addReplyMutation(id, writerEmail, replyText) {
+
+
+export function addReplyMutation(id, writerEmail, replyText) {
     
     console.log("여기는?")
-    // const [ addPostReply ] = useMutation(query.ADD_POST_REPLY, {
-    //     refetchQueries : [{
-    //         query : query.GET_POST_REPLY,
-    //         variables : { post_id : id }
-    //     }]
-    // })
-    const { loading, error, data } = useMutation(query.ADD_POST_REPLY, { 
-        variables : {  
-                post_id : id,
-                writer_email : writerEmail,
-                content : replyText, 
-            },
+    const [ addPostReply ] = useMutation(query.ADD_POST_REPLY, {
         refetchQueries : [{
-            query : query.GET_POSTS_REPLY,
+            //query : query.GET_POST_REPLY,
             variables : { post_id : id }
         }]
-    });
+    })
+    //return addPostReply
+    addPostReply({variables : {
+        post_id : id,
+        writer_email : writerEmail,
+        content : replyText,
+    }})
+    // const { loading, error, data } = useMutation(query.ADD_POST_REPLY, { 
+    //     variables : {  
+    //             post_id : id,
+    //             writer_email : writerEmail,
+    //             content : replyText, 
+    //         },
+    //     refetchQueries : [{
+    //         query : query.GET_POSTS_REPLY,
+    //         variables : { post_id : id }
+    //     }]
+    // });
 
-    return data
+    // return data
     // console.log("여기는??????????????????")
     
-    // addPostReply({variables : {
-    //     post_id : id,
-    //     writer_email : writerEmail,
-    //     content : replyText,
-    // }})
+
 }
 
 // 대댓글 추가

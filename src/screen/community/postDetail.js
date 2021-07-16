@@ -11,6 +11,45 @@ import {useQuery, useMutation, NetworkStatus, useLazyQuery} from '@apollo/react-
 import { GET_POST_REPLY, ADD_POST_REPLY } from '../../connection/query';
 import { getPostReply, addReply , addReReply, addReplyMutation } from '../../connection/gqlAPI';
 
+
+
+
+
+
+// import * as graphql from 'graphql-request'
+// const graphql = require('graphql-request');
+
+//     const graphqlClient = new graphql.GraphQLClient('http://192.168.0.223:3000/graphql',{
+//         headers: { 'Content-Type' : 'application/json' },
+//         timeout: 600000,
+//     })
+
+//     const variable ={
+//         post_id : 1,
+//         writer_email : 'sdafsdf',
+//         content : 'sadfsdf',
+//     }
+//     const gql = graphql.gql `query ADD_POST_REPLY($post_id : post_id, $writer_email : writer_email, $content : content){
+//         response : ADD_POST_REPLY(post_id : $post_id , writer_email : $writer_email , content :$content ) $ {ADD_POST_REPLY}
+//     }`
+//     async function request() {
+//         const data = await graphqlClient.request(gql,variable)
+//         return data.response
+//     }
+
+//     request();
+
+
+
+
+
+
+
+
+
+
+
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -48,6 +87,14 @@ function postDetail({route,navigation}) {
     const [ text, setText ] = useState();
 
     const { loginCheck, setLoginCheck } = React.useContext(GlobalVar)
+
+
+
+
+
+
+
+    
     const [ add_post_reply ] = useMutation(ADD_POST_REPLY, {
         	refetchQueries : [{
             	query : GET_POST_REPLY,
@@ -89,17 +136,12 @@ function postDetail({route,navigation}) {
         if (loginCheck){
             AsyncStorage.getItem('profile',(err,result) => {
                 const profile = JSON.parse(result)
-                addReplyMutation({ post_id : route.params.id , writerEmail : profile.email , content : text}).then((item) => console.log(item));
+                addReplyMutation(route.params.id, profile.email, text).then((item) => console.log(item));
             })
         }
     }
     ///////////////////////////////////// 댓글 추가하기 //////////////////////////////////////////
 	
-	
-    
-
-
-
 
     return (
 
