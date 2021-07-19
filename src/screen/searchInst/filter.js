@@ -62,18 +62,18 @@ export default function filter({navigation}) {
     if (loading) return <Text> 'Loading...' </Text>;
     if (error) return <Text> `Error! ${error.message}` </Text>;
     if (data && data.CareTypes) {
-      return data.CareTypes.map(item => {
+      return data.CareTypes.map((item,key) => {
         console.log(item.id, item.category);
         return (
-          <View>
+          <View key={key}>
             <FormButton
               buttonTitle={item.category}
               key={item.id}
-              //selected={searchTreatmentType[key]}
-              //onPress={() => {
-              //  searchTreatmentType[key] = !searchTreatmentType[key];
-              //  setRerender(!rerender);
-              //}}
+              selected={searchTreatmentType[key]}
+              onPress={() => {
+               searchTreatmentType[key] = 1-searchTreatmentType[key];
+               setRerender(!rerender);
+              }}
             />
           </View>
           //console.log(data)
