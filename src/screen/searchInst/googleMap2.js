@@ -110,7 +110,7 @@ export default function googleMap2({navigation}) {
 
   const refRBSheet = useRef();
 
-  // const {loading, error, data_institution} = useQuery(institution);
+  // const {loading1, error1, data_institution} = useQuery(institution);
   const {loading, error, data, refetch} = useQuery(findWithCareTypeaSearch, {
     variables: {careTypes: searchTreatmentType},
   });
@@ -144,8 +144,7 @@ export default function googleMap2({navigation}) {
   // marker 전체 띄움
   // useEffect(() => {
   //   if (data_institution && data_institution.Institutions) {
-  //     const arr = data_institution.Institutions;
-  //     setMarkerList(...markerList, arr);
+  //     setMarkerList(data_insititution.Insititutions);
   //   }
   // }, [data_institution]);
 
@@ -153,10 +152,6 @@ export default function googleMap2({navigation}) {
     useCallback(() => {
       refetch();
       console.log('Refetched!');
-      console.log(
-        'Length of refetched list:',
-        // data.findWithCareTypeaSearch.length,
-      );
     }, []),
   );
 
@@ -164,6 +159,7 @@ export default function googleMap2({navigation}) {
   useEffect(() => {
     if (data) {
       // console.log('Length of raw data:', data.findWithCareTypeaSearch.length);
+      refetch();
       console.log('data changed');
       setMarkerList(data.findWithCareTypeaSearch);
     }
@@ -176,7 +172,11 @@ export default function googleMap2({navigation}) {
       setMarkerFlag(true);
     }
   }, [markerList]);
-  // markerList 내의 아이템들 화면에 띄워줌 (현위치 기준으로 근처에 있는 것만 보여주고 지도상에서 위치 옮기면 그 근처에 있는 것만 보여줌)
+
+  // markerList 내의 아이템들 화면에 띄워줌
+
+  // Version1 (현위치 기준으로 근처에 있는 것만 보여주고 지도상에서 위치 옮기면 그 근처에 있는 것만 보여줌)
+
   const showMarker = arr => {
     if (arr.length > 0) {
       return arr.map(item => {
@@ -204,6 +204,27 @@ export default function googleMap2({navigation}) {
       });
     }
   };
+
+  // Version2 (그냥 다 띄워줌)
+
+  // const showMarker = arr => {
+  //   if (arr.length > 0) {
+  //     arr.map(item => {
+  //       return <Marker
+  //         width={50}
+  //         height={50}
+  //         key={item.id}
+  //         coordinate={{latitude: item.latitude, longitude: item.longitude}}
+  //         image={require(markerIMG)}
+  //         title={item.institution_name}
+  //         onPress={() => {
+  //           setShowOne(item);
+  //           setFlag(true);
+  //         }}
+  //       />;
+  //     });
+  //   }
+  // };
   ////////////////////////////////////////////////////////////////////////////////
 
   return (
@@ -309,24 +330,34 @@ export default function googleMap2({navigation}) {
           },
         }}
         height={windowHeight * 0.9}>
-        <ScrollView>
-          {data && <Text style={{textAlign: 'center'}}>
-            {data.findWithCareTypeaSearch.length}개의 검색 결과가 있습니다.
-          </Text>}
-          {data && data.findWithCareTypeaSearch.map((mem, key) => {
-            return (
-              <TouchableOpacity
-                key={key}
-                style={styles.searchResultList}
-                onPress={() => {
-                  //개별기관 정보페이지로
-                }}>
-                <Text style={{fontSize: 16}}>{mem.institution_name}</Text>
-                <Text style={{fontSize: 14}}>{mem.address}</Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
+        <View>
+        {data && (
+            <Text style={{textAlign: 'center'}}>
+              {data.findWithCareTypeaSearch.length}개의 검색 결과가 있습니다.
+            </Text>
+          )}
+        </View>
+        {/* <ScrollView>
+          {data && (
+            <Text style={{textAlign: 'center'}}>
+              {data.findWithCareTypeaSearch.length}개의 검색 결과가 있습니다.
+            </Text>
+          )}
+          {data &&
+            data.findWithCareTypeaSearch.map((mem, key) => {
+              return (
+                <TouchableOpacity
+                  key={key}
+                  style={styles.searchResultList}
+                  onPress={() => {
+                    //개별기관 정보페이지로
+                  }}>
+                  <Text style={{fontSize: 16}}>{mem.institution_name}</Text>
+                  <Text style={{fontSize: 14}}>{mem.address}</Text>
+                </TouchableOpacity>
+              );
+            })}
+        </ScrollView> */}
       </RBSheet>
     </View>
   );
