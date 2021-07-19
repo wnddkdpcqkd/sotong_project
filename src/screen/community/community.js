@@ -22,18 +22,33 @@ export default function community({navigation,route}) {
 	const [post, setPost] = useState([]) 							//실제 보여줄 게시물 배열 (smallCategory로 filtering) 
 	const [category, setCategory] = useState([]);					//카테고리 ( 1: 질문, 2: 고민, 3: 리뷰, 4: 정보)
 	
-	useEffect(() => {
-		console.log("몇번 실행될까요")
-		gqlAPI.getPost().then((data) => {
-			setPostContainer(data)
-			setPost(data)
-		})
 
-		gqlAPI.getCommunitySmallCategory().then((data) =>{
-			setCategory(data);
-		})
+	useFocusEffect(
+		useCallback(() => {
+			console.log("s;adjflksd")
+			gqlAPI.getPost().then((data) => {
+				setPostContainer(data)
+				setPost(data)
+				console.log(data);
+			})
+	
+			gqlAPI.getCommunitySmallCategory().then((data) =>{
+				setCategory(data);
+			})
+		}, []),
+	);
+	// useEffect(() => {
+	// 	console.log("몇번 실행될까요")
+	// 	gqlAPI.getPost().then((data) => {
+	// 		setPostContainer(data)
+	// 		setPost(data)
+	// 	})
 
-	},[])
+	// 	gqlAPI.getCommunitySmallCategory().then((data) =>{
+	// 		setCategory(data);
+	// 	})
+
+	// },[])
 
 
 

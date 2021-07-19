@@ -19,6 +19,9 @@ import ImagePicker from 'react-native-image-crop-picker';
 
 
 export default function writePost({navigation}) {
+    
+    // 변경부분!
+    const [profile, setProfile] = useState();
 
     const [postTitle, setPostTitle] = useState();       //게시글 제목
     const [postText, setPostText] = useState();         //게시글 내용
@@ -76,8 +79,21 @@ export default function writePost({navigation}) {
             }}).catch(e => console.log('Error : ',e.message))
         })
     }
-    
 
+
+    useEffect(() => {
+        // 변경부분! profile 받아오는 함수 만들어서 따로 놓을것
+        AsyncStorage.getItem('profile',(err,result) => {
+            setProfile(JSON.parse(result))
+        })
+    },[])
+    function addPost() {
+        gqlAPI.addPost(profile.email, categoryState.findIndex((item) => item === 1) + 1 , postTitle, postText)
+        .then((item) => {
+            if(item) alert("게시글 입력 완료!")
+            navigation.goBack()
+        })
+    }
     
     
     ///////////////////// 게시글 쓰기 ///////////////////////////////
@@ -151,12 +167,8 @@ export default function writePost({navigation}) {
                     <Text style={{fontSize : 25}}> 글쓰기 </Text>
 
                     <TouchableOpacity
-                        onPress = {() => {
-                            sendPost()
-                            alert('게시글 작성 완료.')
-                            navigation.goBack()
-                        }
-                    }>
+                        onPress = {() => addPost()}
+					>
                         <Text style={styles.headerButton}>등록</Text>
                     </TouchableOpacity>
                 </View>
