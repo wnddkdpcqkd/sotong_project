@@ -25,10 +25,10 @@ export default function community({navigation}) {
 	
 	
 	getPost().then((data) => {
-		if(data && data.posts){
-			setPostContainer(data.posts.reverse())
-			setPost(data.posts)
-		}
+			if(data && data.posts){
+				setPostContainer(data.posts.reverse())
+				setPost(data.posts)
+			}
 	});
 
 	getSmallCategory("community").then((data) => {
@@ -98,7 +98,9 @@ export default function community({navigation}) {
 						<TouchableOpacity style={{ borderRadius : 100, marginRight : 20,}}>
 							<FontAwesomeIcon name="refresh" style={{ borderRadius : 100, fontSize: 25 }} />
 						</TouchableOpacity>
-						<TouchableOpacity style={{ borderRadius : 100,}}>
+						<TouchableOpacity 
+							style={{ borderRadius : 100,}} 
+							onPress = {() => {navigation.navigate("searchPost")}}>
 							<FontAwesomeIcon name="search" style={{ fontSize: 25 }} />
 						</TouchableOpacity>
 					</View>

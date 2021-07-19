@@ -1,12 +1,12 @@
 import React from 'react'
 import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity, ScrollView } from 'react-native'
 import { SearchBar } from 'react-native-elements';
+import { Divider } from 'react-native-elements/dist/divider/Divider';
 import EvilIconsIcon from "react-native-vector-icons/EvilIcons";
-import Post from '../components/community/post';
-import { getPost } from '../connection/gqlAPI';
+import Post from '../../components/community/post';
+import { getPost } from '../../connection/gqlAPI';
 
-
-export default function test({navigation}) {
+export default function searchPost({navigation}) {
 
     const [searchText , setSearchText ] = React.useState();
     const [post, setPost] = React.useState([]);
@@ -39,7 +39,7 @@ export default function test({navigation}) {
 							? post.map((item) => {
 								if(item.title.indexOf(searchText) !== -1 || item.content.indexOf(searchText) !== -1)
 								{
-									console.log("item : ", item.title, item.content)
+									console.log("item.title : ", item.title, "item.content : " ,  item.content)
 									return(
 										<View style={{flex : 1}} key={item.id}>
 											<TouchableOpacity onPress={()=> navigation.navigate('postDetail',item)}>
@@ -49,12 +49,13 @@ export default function test({navigation}) {
 													content={item.content}
 													category={item.small_category}
 													type="communityList"
-													//profileName={item.sotongUser.nick_name}
+													profileName={item.sotongUser.nick_name}
 													profileTime={item.create_date}
 													replyCount ={item.replyCount ? item.replyCount : 0 }
 													likeCount ={item.likeCount ? item.likeCount : 0}
 												/>
 											</TouchableOpacity>
+                                            <Divider></Divider>
 										</View>
 									)
 								}

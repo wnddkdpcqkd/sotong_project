@@ -149,11 +149,13 @@ function postDetail({route,navigation}) {
         <ScrollView style={{flex : 1}}>
 
             {/* 게시글 */}
+            {/* {console.log("route.params" , route.params)} */}
             <Post
                 postImage={route.params.image}
                 content={route.params.content}
                 profileName={route.params.profileName}
                 profileTime={route.params.profileTime}
+                title={route.params.title}
             />          
             <Divider color='#D4D4D4' height={2}/>
                 

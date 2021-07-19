@@ -58,7 +58,7 @@ export default function post(props) {
                 {/* 제목 */}
                 <View style={{flex : 3, }}>
                     <Text style={styles.headerCategory}> # {props.category || '테스트'} </Text>
-                    <Text style={styles.headerTitle}> {props.title || '테스트용 제목 에베베베베베'} </Text>
+                    <Text style={styles.headerTitle}> {props.title || '제목이 안들어왓음'} </Text>
                 </View> 
 
                 {/* 쩜 세개 */}
@@ -86,7 +86,7 @@ export default function post(props) {
             {/* Body-Text부분 */}
             <View style={styles.body}>
                 <Text style={styles.bodyText}> 
-                    {props.content.length < 100 ? props.content.length : props.content.slice(0,100) + '...'} 
+                    {props.content.length < 100 ? props.content : props.content.slice(0,100) + '...'} 
                 </Text>
 
                 <Text style={styles.bodyProfileName}> 

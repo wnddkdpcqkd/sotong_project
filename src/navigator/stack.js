@@ -8,6 +8,7 @@ import WritePost from '../screen/community/writePost';
 //import Search from '../screen/mapSearch/searchPage';
 import filter from '../screen/searchInst/filter';
 import createAccount from '../screen/mypage/createAccount';
+import searchPost from '../screen/community/searchPost';
 
 const Stack = createStackNavigator();
 
@@ -63,6 +64,15 @@ export default function stack({navigation}){ //screen들간의 구조를 선언
         component={createAccount}
         options={{
           title: '계정 생성',
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="searchPost"
+        component={searchPost}
+        options={{
+          title: '게시글 검색',
           headerShown: false,
         }}
       />
