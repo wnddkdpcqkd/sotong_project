@@ -88,7 +88,7 @@ export default function reply(props) {
 										/>
 									</View>
 									<View style={{flex : 7}}>
-										<Text style={styles.profileName}> {item.nickName || '대댓글 닉네임 안넘어옴'} </Text>
+										<Text style={styles.profileName}> {item.sotongUser.nick_name || '대댓글 닉네임 안넘어옴'} </Text>
 										<Text style={styles.replyTime} > {item.create_date.substring(0,10) || '20분전'}</Text>
 									</View>
 								</View>

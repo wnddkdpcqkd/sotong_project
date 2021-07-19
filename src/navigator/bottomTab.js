@@ -11,7 +11,7 @@ import Login from '../screen/mypage/login';
 import naverTest from '../screen/mypage/naverTest'
 import { GlobalVar } from '../GlobalVariables';
 import institutionInfo from '../screen/searchInst/institutionInfo2'
-import test from './test'
+// import test from './test'
 
 
 const Tab = createBottomTabNavigator(); // Tab의 구조 선언
@@ -63,7 +63,7 @@ export default function bottomTab (){
       {/* <Tab.Screen name="커뮤니티" component={MapTestScreen} /> */}
       {loginCheck && <Tab.Screen name="My Page" component={mypage} />}
       {!loginCheck && <Tab.Screen name="My Page" component={Login} />}
-      <Tab.Screen name="테스트용 페이지" component={test} />
+      {/* <Tab.Screen name="테스트용 페이지" component={test} /> */}
       
       
     </Tab.Navigator>

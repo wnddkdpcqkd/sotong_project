@@ -9,61 +9,34 @@ import { GlobalVar } from '../../GlobalVariables';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import {useQuery, useMutation, NetworkStatus, useLazyQuery} from '@apollo/react-hooks';
 import { GET_POST_REPLY, ADD_POST_REPLY } from '../../connection/query';
-import { getPostReply, addReply , addReReply, addReplyMutation } from '../../connection/gqlAPI';
+import { getPostReply, addReply , addReReply, addReplyMutation } from '../../connection/gqlAPI2';
 
-
-
-
-
-
-// import * as graphql from 'graphql-request'
-// const graphql = require('graphql-request');
-
-//     const graphqlClient = new graphql.GraphQLClient('http://192.168.0.223:3000/graphql',{
-//         headers: { 'Content-Type' : 'application/json' },
-//         timeout: 600000,
-//     })
-
-//     const variable ={
-//         post_id : 1,
-//         writer_email : 'sdafsdf',
-//         content : 'sadfsdf',
-//     }
-//     const gql = graphql.gql `query ADD_POST_REPLY($post_id : post_id, $writer_email : writer_email, $content : content){
-//         response : ADD_POST_REPLY(post_id : $post_id , writer_email : $writer_email , content :$content ) $ {ADD_POST_REPLY}
-//     }`
-//     async function request() {
-//         const data = await graphqlClient.request(gql,variable)
-//         return data.response
-//     }
-
-//     request();
-
-
-
-
-
-
-
-
-
-
-
+import * as gqlAPI from '../../connection/gqlAPI'
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 function postDetail({route,navigation}) {
-    
 
+    // 변경부분 !
+    const [profile, setProfile] = useState();
 
     // reply : 받아온 댓글 목록
     const [reply, setReply] = useState([]);
     
-    getPostReply(route.params.id).then((item) => {
-        setReply(item.postReply)
-    })
+	function refreshReply(id) {
+		gqlAPI.getPostReply(id).then((item) => { setReply(item) })
+	}
 
+    useEffect(() => {
+        //gqlAPI.getPostReply(route.params.id).then((item) => { console.log("item1 : ", item) , setReply(item) })
+		refreshReply(route.params.id)
+        // 변경부분! profile 받아오는 함수 만들어서 따로 놓을것
+        AsyncStorage.getItem('profile',(err,result) => {
+            setProfile(JSON.parse(result))
+        })
+    },[])
+    
     ///////////////////////////////////// 댓글 추가하기 //////////////////////////////////////////
     /*  
         reReplyInfo : 대댓글 작성 시, 대댓글 달 댓글의 {ID, 작성자 nickName}
@@ -84,64 +57,38 @@ function postDetail({route,navigation}) {
         console.log('[postDetails] reReplyInfo : ', reReplyInfo.replyId==='' ? replyId : '에베베베ㅔ베')
     }
 
-    const [ text, setText ] = useState();
 
+
+
+
+    const [ text, setText ] = useState();
     const { loginCheck, setLoginCheck } = React.useContext(GlobalVar)
 
 
 
-
-
-
-
-    
-    const [ add_post_reply ] = useMutation(ADD_POST_REPLY, {
-        	refetchQueries : [{
-            	query : GET_POST_REPLY,
-            	variables : { post_id : route.params.id }
-			}]
-		}
-    )
-
     function add_reply() {
-        if (loginCheck){
-            
-            AsyncStorage.getItem('profile',(err,result) => {
-                const profile = JSON.parse(result)
-                let postId = null;
-                
-                if (reReplyInfo.replyId === ''){
-                    postId = route.params.id
-                    reReplyInfo.replyId = null
-                    console.log("replyId : " ,  reReplyInfo.replyId)
-                }
-
-                add_post_reply({variables : {
-                    post_id : postId,
-                    writer_email : profile.email,
-                    content : text,
-                    reply_post_id : reReplyInfo.replyId
-                }}).catch( e => e.message)
-				alert('댓글이 입력되었습니다')
-				setText('')
-            })            
+        if(loginCheck){
+			//댓글
+            if (reReplyInfo.replyId === ''){
+                gqlAPI.addReply(route.params.id,profile.email,text).then((result) => {
+                    if (result) { alert("댓글 입력 완료!") }
+					refreshReply(route.params.id)
+					setText('')
+                })
+            }
+			//대댓글 
+			else {
+                gqlAPI.addReplyReply(profile.email,text,reReplyInfo.replyId).then((result) =>{
+                    if (result) { alert("대댓글 입력 완료!")}
+					refreshReply(route.params.id)
+					setText('')
+                })
+            }
         }
-        else {
-            alert("로그인이 필요합니다.")
+        else{
+            alert("로그인이 필요합니다");
         }
     }
-
-    function add_reply1(){
-        console.log("add_reply1")
-        if (loginCheck){
-            AsyncStorage.getItem('profile',(err,result) => {
-                const profile = JSON.parse(result)
-                addReplyMutation(route.params.id, profile.email, text).then((item) => console.log(item));
-            })
-        }
-    }
-    ///////////////////////////////////// 댓글 추가하기 //////////////////////////////////////////
-	
 
     return (
 
@@ -217,7 +164,9 @@ function postDetail({route,navigation}) {
 					value = {text}
                 />
                 <TouchableOpacity style={styles.submit}
-					onPress={() => { add_reply1() }}
+					onPress={() => { 
+						add_reply()
+					 }}
                 >
                     <Text style={styles.text}> 게시 </Text>
                 </TouchableOpacity>

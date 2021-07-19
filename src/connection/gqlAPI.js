@@ -1,91 +1,88 @@
-import { gql } from "apollo-boost";
-import client from './client';
-import { useQuery, useMutation, throwServerError } from '@apollo/react-hooks';
+import { request, GraphQLClient } from 'graphql-request'
 import * as query from './query'
+// const graphql = require('graphql-request');
 
-export async function getPost() {
-    const { loading , error , data } = useQuery(query.GET_POSTS)
-    if(loading) return loading
-    return data
+    
+const graphqlClient = new GraphQLClient('http://192.168.0.165:3000/graphql',{
+    headers: { 'Content-Type' : 'application/json' },
+    timeout: 30000,
+})
+
+//커뮤니티 게시글 전체 받아오기
+export async function getPost(){
+	const data = await graphqlClient.request(query.GET_POSTS)
+
+	return data.posts.reverse()
 }
 
-
-// page=(community) : smallCategory에 {전체} 추가
-export async function getSmallCategory(page) {
-    console.log("[gqlApi] getSmallCategory : ")
-    const { loading , error , data } = useQuery(query.GET_POST_CATEGORY)
-    if(loading) return loading
-    if(page === "community") {
-        if(data.postCategorys[0].id === 1){
-            data.postCategorys.unshift({"__typename": "PostCategory", "content": "전체", "id": 0})
-        }
-    }else{
-        if(data.postCategorys[0].id === 0){
-            data.postCategorys.shift()
-        }
+//커뮤니티 게시글 댓글
+//postId : 게시글 ID에 해당되는 댓글 가져옴
+export async function getPostReply(postId) {
+    
+    let variables = {
+        post_id : postId
     }
-    return data
-}
-
-// 댓글 받기
-// id : 댓글 받을 게시물의 id
-export async function getPostReply(id) {
-    const { loading, error, data } = useQuery(query.GET_POST_REPLY, { variables : { post_id : id }});
-    if (loading) return loading
-    return data
-}
-
-// 댓글 추가
-// id           : 댓글 추가할 게시물의 id
-// writerEmail  : 작성자 이메일
-// replyText    : 댓글 내용
-
-
-export function addReplyMutation(id, writerEmail, replyText) {
     
-    console.log("여기는?")
-    const [ addPostReply ] = useMutation(query.ADD_POST_REPLY, {
-        refetchQueries : [{
-            //query : query.GET_POST_REPLY,
-            variables : { post_id : id }
-        }]
-    })
-    //return addPostReply
-    addPostReply({variables : {
-        post_id : id,
-        writer_email : writerEmail,
-        content : replyText,
-    }})
-    // const { loading, error, data } = useMutation(query.ADD_POST_REPLY, { 
-    //     variables : {  
-    //             post_id : id,
-    //             writer_email : writerEmail,
-    //             content : replyText, 
-    //         },
-    //     refetchQueries : [{
-    //         query : query.GET_POSTS_REPLY,
-    //         variables : { post_id : id }
-    //     }]
-    // });
-
-    // return data
-    // console.log("여기는??????????????????")
+    const data = await graphqlClient.request(query.GET_POST_REPLY, variables)
     
-
+    return data.postReply;
 }
 
-// 대댓글 추가
-export async function addReReply(id, writerEmail, replyText) {
-    const [ addPostReReply ] = useMutation(query.ADD_POST_REPLY, {
-        refetchQueries : [{
-            query : query.GET_POST_REPLY,
-            variables : { post_id : id }
-        }]
-    })
+//커뮤니티 게시글 분류 
+export async function getCommunitySmallCategory(){
+	const data = await graphqlClient.request(query.GET_POST_CATEGORY)
+	data.postCategorys.unshift({"__typename": "PostCategory", "content": "전체", "id": 0})
 
-    addPostReReply({variables : {
-        writer_email : writerEmail,
-        content : replyText,
-        reply_post_id : id
-    }}).catch( e => e.message)
+	return data.postCategorys
 }
+
+//글쓰기 게시글 분류
+export async function getWritePostSmallCategory(){
+	const data = await graphqlClient.request(query.GET_POST_CATEGORY)
+
+	return data.postCategorys
+}
+
+//커뮤니티 게시글 입력
+export async function addPost(user_email, small_category, title, content) {
+
+	let variables = {
+		user_email : user_email,
+		small_category : small_category,
+		title : title,
+		content : content,
+	}
+
+    const data = await graphqlClient.request(query.ADD_POST,variables)
+
+	return data.savePost
+}
+
+//커뮤니티 댓글 입력
+export async function addReply(post_id, writer_email, content) {
+
+	let variables = {
+		post_id : post_id,
+		writer_email : writer_email,
+		content : content,
+	}
+
+    const data = await graphqlClient.request(query.ADD_POST_REPLY, variables)
+    
+    return data.savePostReply
+}
+
+//커뮤니티 대댓글 입력
+export async function addReplyReply(writer_email, content, reply_post_id) {
+
+	let variables = {
+		writer_email : writer_email,
+		content : content,
+		reply_post_id : reply_post_id
+	}
+
+    const data = await graphqlClient.request(query.ADD_POST_REPLY, variables)
+    
+    return data.savePostReply
+}
+

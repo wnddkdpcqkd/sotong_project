@@ -8,8 +8,9 @@ import { GET_POST_CATEGORY, ADD_POST, GET_POSTS } from '../../connection/query';
 import { useQuery, useMutation } from '@apollo/client';
 import { GlobalVar } from '../../GlobalVariables';
 
+import * as gqlAPI from '../../connection/gqlAPI'
 
-import { getPost1, getSmallCategory } from '../../connection/gqlAPI';
+import { getPost1, getSmallCategory } from '../../connection/gqlAPI2';
 
 // 이미지 업로드 //
 import ImagePicker from 'react-native-image-crop-picker';
@@ -35,17 +36,15 @@ export default function writePost({navigation}) {
         );
     }
 
-    
-
     // 게시물 카테고리 종류 
     const [postCategory, setPostCategory] = useState([])
-    getSmallCategory().then((data) =>{
-        if(data && data.postCategorys){
-            setPostCategory(data.postCategorys);
-        }
-    })
+    useEffect(()=> {
+        gqlAPI.getWritePostSmallCategory().then((data) =>{
+            setPostCategory(data)
+        })
+    },[])
 
-    //  게시물 카테고리 선택 이벤트
+    // 게시물 카테고리 선택 이벤트
     const [categoryState, setCategoryState] = useState([0,0,0,0]);
     function setCategoryArr(num) {
         let newArr = [0,0,0,0]
@@ -77,6 +76,10 @@ export default function writePost({navigation}) {
             }}).catch(e => console.log('Error : ',e.message))
         })
     }
+    
+
+    
+    
     ///////////////////// 게시글 쓰기 ///////////////////////////////
 
     ///////////////////// 이미지 선택 ///////////////////////////////
@@ -142,7 +145,7 @@ export default function writePost({navigation}) {
                     <EvilIconsIcon
                         name="chevron-left"
                         style={styles.headerIcon}
-                        onPress = {() => navigation.goBack()}
+                        onPress = {() => navigation.goBack({refresh : true})}
                     ></EvilIconsIcon>
 
                     <Text style={{fontSize : 25}}> 글쓰기 </Text>

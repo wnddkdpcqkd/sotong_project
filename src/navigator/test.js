@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity, ScrollView }
 import { SearchBar } from 'react-native-elements';
 import EvilIconsIcon from "react-native-vector-icons/EvilIcons";
 import Post from '../components/community/post';
-import { getPost } from '../connection/gqlAPI';
+import { getPost } from '../connection/gqlAPI2';
 
 
 export default function test({navigation}) {

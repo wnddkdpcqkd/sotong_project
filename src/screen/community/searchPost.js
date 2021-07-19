@@ -4,7 +4,7 @@ import { SearchBar } from 'react-native-elements';
 import { Divider } from 'react-native-elements/dist/divider/Divider';
 import EvilIconsIcon from "react-native-vector-icons/EvilIcons";
 import Post from '../../components/community/post';
-import { getPost } from '../../connection/gqlAPI';
+import { getPost } from '../../connection/gqlAPI2';
 
 export default function searchPost({navigation}) {
 

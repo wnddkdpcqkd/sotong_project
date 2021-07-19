@@ -9,12 +9,11 @@ import { GlobalVar } from '../../GlobalVariables';
 import { useQuery } from '@apollo/react-hooks';
 import { useFocusEffect, useIsFocused  } from '@react-navigation/native';
 import { GET_POSTS, GET_POST_CATEGORY } from '../../connection/query';
-import { getPost, getSmallCategory } from '../../connection/gqlAPI';
-
+import { getPost, getSmallCategory } from '../../connection/gqlAPI2';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import * as gqlAPI from '../../connection/gqlAPI'
 
-
-export default function community({navigation}) {
+export default function community({navigation,route}) {
 	
 	
 
@@ -23,20 +22,19 @@ export default function community({navigation}) {
 	const [post, setPost] = useState([]) 							//실제 보여줄 게시물 배열 (smallCategory로 filtering) 
 	const [category, setCategory] = useState([]);					//카테고리 ( 1: 질문, 2: 고민, 3: 리뷰, 4: 정보)
 	
-	
-	getPost().then((data) => {
-			if(data && data.posts){
-				setPostContainer(data.posts.reverse())
-				setPost(data.posts)
-			}
-	});
+	useEffect(() => {
+		console.log("몇번 실행될까요")
+		gqlAPI.getPost().then((data) => {
+			setPostContainer(data)
+			setPost(data)
+		})
 
-	getSmallCategory("community").then((data) => {
-		if(data && data.postCategorys){
-			setCategory(data.postCategorys);
-		}
-		console.log("[community] : postCategorys", data.postCategorys)
-	});
+		gqlAPI.getCommunitySmallCategory().then((data) =>{
+			setCategory(data);
+		})
+
+	},[])
+
 
 
 	///////////////////////////// bigCategory BOX  //////////////////////////
@@ -148,15 +146,6 @@ export default function community({navigation}) {
 
 			{/* SMALL 카테고리 버튼 (전체, 고민, 리뷰, 질문, 병원 ...) */}
 			<View style={styles.smallCategory}>
-				{/* <View style={styles. smallCategoryBox}>
-					
-					<TouchableOpacity
-						style={[{backgroundColor : smallCategoryArr[0] ? '#FFBCBC' : '#ffffff'},styles.smallCategoryButton]}
-						onPress = { () => smallCategorySelect(0)}
-					>
-						<Text style={styles.smallCategoryText}> 전체 </Text>
-					</TouchableOpacity>
-				</View> */}
 				{
 					category ? category.map((item) => {
 						return(
