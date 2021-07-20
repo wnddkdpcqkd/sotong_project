@@ -11,6 +11,7 @@ import {useQuery, useMutation, NetworkStatus, useLazyQuery} from '@apollo/react-
 import { GET_POST_REPLY, ADD_POST_REPLY } from '../../connection/query';
 import { getPostReply, addReply , addReReply, addReplyMutation } from '../../connection/gqlAPI2';
 
+
 import * as gqlAPI from '../../connection/gqlAPI'
 
 const windowWidth = Dimensions.get('window').width;
@@ -28,6 +29,7 @@ function postDetail({route,navigation}) {
 		gqlAPI.getPostReply(id).then((item) => { setReply(item) })
 	}
 
+    
     useEffect(() => {
         //gqlAPI.getPostReply(route.params.id).then((item) => { console.log("item1 : ", item) , setReply(item) })
 		refreshReply(route.params.id)
@@ -71,17 +73,21 @@ function postDetail({route,navigation}) {
 			//댓글
             if (reReplyInfo.replyId === ''){
                 gqlAPI.addReply(route.params.id,profile.email,text).then((result) => {
-                    if (result) { alert("댓글 입력 완료!") }
-					refreshReply(route.params.id)
-					setText('')
+                    if (result) {
+                        alert("댓글 입력 완료!") 
+                        refreshReply(route.params.id)
+                        setText('')
+                    }
                 })
             }
 			//대댓글 
 			else {
                 gqlAPI.addReplyReply(profile.email,text,reReplyInfo.replyId).then((result) =>{
-                    if (result) { alert("대댓글 입력 완료!")}
-					refreshReply(route.params.id)
-					setText('')
+                    if (result) { 
+                        alert("대댓글 입력 완료!")
+                        refreshReply(route.params.id)
+                        setText('')
+                    }
                 })
             }
         }

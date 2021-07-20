@@ -5,8 +5,6 @@ import * as query from './query'
 
 
 
-
-
 export async function getPost() {
     const { loading , error , data } = useQuery(query.GET_POSTS)
     if(loading) return loading
@@ -44,22 +42,38 @@ export async function getPostReply(id) {
 // writerEmail  : 작성자 이메일
 // replyText    : 댓글 내용
 
-
+//     // ,{refetchQueries : [{
+//     //     query : query.GET_POST_REPLY,
+//     //     variables : { post_id : id }
+//     // }]}
+// )
 export function addReplyMutation(id, writerEmail, replyText) {
     
     console.log("여기는?")
-    const [ addPostReply ] = useMutation(query.ADD_POST_REPLY, {
-        refetchQueries : [{
-            //query : query.GET_POST_REPLY,
-            variables : { post_id : id }
-        }]
-    })
+
+	const [ addPostReply ] = useMutation(query.ADD_POST_REPLY)
+	// const [ addPostReply ] = useMutation(query.ADD_POST_REPLY, {
+    //     refetchQueries : [{
+    //         //query : query.GET_POST_REPLY,
+    //         variables : { post_id : id }
+    //     }]
+    // })
     //return addPostReply
-    addPostReply({variables : {
-        post_id : id,
-        writer_email : writerEmail,
-        content : replyText,
-    }})
+    const { loading, error, data} = addTest(
+        {
+            variables : {
+            post_id : id,
+            writer_email : writerEmail,
+            content : replyText,
+            },
+            refetchQueries : [{
+                query : query.GET_POST_REPLY,
+                variables : { post_id : id }
+            }]
+        }
+    ).then((item) => {
+        console.log(item)
+    })
     // const { loading, error, data } = useMutation(query.ADD_POST_REPLY, { 
     //     variables : {  
     //             post_id : id,
@@ -74,18 +88,17 @@ export function addReplyMutation(id, writerEmail, replyText) {
 
     // return data
     // console.log("여기는??????????????????")
-    
-
+    return data
 }
 
 // 대댓글 추가
 export async function addReReply(id, writerEmail, replyText) {
-    const [ addPostReReply ] = useMutation(query.ADD_POST_REPLY, {
-        refetchQueries : [{
-            query : query.GET_POST_REPLY,
-            variables : { post_id : id }
-        }]
-    })
+    // const [ addPostReReply ] = useMutation(query.ADD_POST_REPLY, {
+    //     refetchQueries : [{
+    //         query : query.GET_POST_REPLY,
+    //         variables : { post_id : id }
+    //     }]
+    // })
 
     addPostReReply({variables : {
         writer_email : writerEmail,

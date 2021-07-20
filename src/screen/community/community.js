@@ -25,7 +25,6 @@ export default function community({navigation,route}) {
 
 	useFocusEffect(
 		useCallback(() => {
-			console.log("s;adjflksd")
 			gqlAPI.getPost().then((data) => {
 				setPostContainer(data)
 				setPost(data)
@@ -37,20 +36,6 @@ export default function community({navigation,route}) {
 			})
 		}, []),
 	);
-	// useEffect(() => {
-	// 	console.log("몇번 실행될까요")
-	// 	gqlAPI.getPost().then((data) => {
-	// 		setPostContainer(data)
-	// 		setPost(data)
-	// 	})
-
-	// 	gqlAPI.getCommunitySmallCategory().then((data) =>{
-	// 		setCategory(data);
-	// 	})
-
-	// },[])
-
-
 
 	///////////////////////////// bigCategory BOX  //////////////////////////
 	// [전체, 컨텐츠, 공지사항]
