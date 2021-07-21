@@ -207,12 +207,15 @@ export default function community({navigation,route}) {
 
             {/* Floating 버튼 */}
             <ActionButton buttonColor='#FA8072'>
-                <ActionButton.Item buttonColor='#FA8072' title="게시글 작성" onPress={() => 
-					{
+                <ActionButton.Item buttonColor='#FA8072' title="게시글 작성" onPress={() => 	
 						loginCheck ? navigation.navigate('writePost') : alert('로그인이 필요합니다')
-					}
-						}>
+				}>
                     <FontAwesomeIcon name="pencil" style={{fontSize : 15}} />
+                </ActionButton.Item>
+				<ActionButton.Item buttonColor='#FA8072' title="컨텐츠 작성" onPress={() => 	
+						loginCheck ? navigation.navigate('writePost') : alert('로그인이 필요합니다')
+				}>
+                    <FontAwesomeIcon name="film" style={{fontSize : 15}} />
                 </ActionButton.Item>
             </ActionButton>
 
